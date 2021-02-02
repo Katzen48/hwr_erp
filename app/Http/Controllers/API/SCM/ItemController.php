@@ -4,12 +4,15 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\Item;
+use App\Traits\DashboardVisible;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ItemController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *

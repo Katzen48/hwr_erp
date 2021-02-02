@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('application/structure', [\App\Http\Controllers\API\Application\StructureController::class, 'routes']);
 
 Route::group(['prefix' => 'scm'], function() {
    Route::apiResource('item', \App\Http\Controllers\API\SCM\ItemController::class);
