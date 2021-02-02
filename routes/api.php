@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['prefix' => 'scm'], function() {
+   Route::apiResource('item', \App\Http\Controllers\API\SCM\ItemController::class);
+   Route::apiResource('item.variant', \App\Http\Controllers\API\SCM\ItemVariantController::class);
+});
