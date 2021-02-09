@@ -18,6 +18,7 @@ class CreateItemVariantsTable extends Migration
             $table->unsignedBigInteger('item_id');
             $table->string('description')->default('');
             $table->float('unit_price')->default(0);
+            $table->float('vat_percent')->default(19);
             $table->timestamps();
 
             $table->foreign('item_id')->references('id')->on('items')->onDelete('RESTRICT')->onUpdate('CASCADE');

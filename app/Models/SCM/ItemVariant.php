@@ -2,6 +2,7 @@
 
 namespace App\Models\SCM;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,8 +14,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $item_id
  * @property string $description
  * @property float $unit_price
- * @property \DateTimeImmutable $created_at
- * @property \DateTimeImmutable $updated_at
+ * @property float $vat_percent
+ * @property CarbonInterface $created_at
+ * @property CarbonInterface $updated_at
  * @property Item $item
  */
 class ItemVariant extends Model
