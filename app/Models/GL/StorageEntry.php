@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property integer $user_id
  * @property integer $employee_id
  * @property CarbonInterface $posting_date
+ * @property CarbonInterface $delivery_date
  * @property integer $quantity
  * @property integer $applies_to_entry
  * @property integer $remaining_quantity
@@ -34,5 +35,5 @@ class StorageEntry extends Model
 {
     use HasFactory;
 
-    protected $dates = ['canceled_at', 'closed_at', 'posting_date'];
+    protected $dates = ['canceled_at', 'closed_at', 'posting_date', 'delivery_date'];
 }
