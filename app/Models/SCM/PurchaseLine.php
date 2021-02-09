@@ -28,4 +28,6 @@ use Illuminate\Database\Eloquent\Model;
 class PurchaseLine extends Model
 {
     use HasFactory;
+
+    protected $dates = ['archived_at'];
 }

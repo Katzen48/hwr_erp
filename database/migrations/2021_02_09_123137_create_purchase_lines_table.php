@@ -14,8 +14,8 @@ class CreatePurchaseLinesTable extends Migration
     public function up()
     {
         Schema::create('purchase_lines', function (Blueprint $table) {
-            $table->unsignedBigInteger('line_no');
             $table->unsignedBigInteger('purchase_header_id');
+            $table->unsignedBigInteger('line_no');
             $table->unsignedBigInteger('item_id')->nullable();
             $table->unsignedBigInteger('item_variant_id')->nullable();
             $table->string('description')->default('');
@@ -28,9 +28,11 @@ class CreatePurchaseLinesTable extends Migration
             $table->timestamp('archived_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('purchase_header_id')->references('id')->on('PurchaseHeaders')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->primary(['purchase_header_id', 'line_no']);
+
+            $table->foreign('purchase_header_id')->references('id')->on('purchase_headers')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('RESTRICT')->onUpdate('RESTRICT');
-            $table->foreign('item_variant_id')->references('id')->on('itemVariants')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('item_variant_id')->references('id')->on('item_variants')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('RESTRICT')->onUpdate('RESTRICT');
         });
     }

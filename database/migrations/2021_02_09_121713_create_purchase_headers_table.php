@@ -26,10 +26,10 @@ class CreatePurchaseHeadersTable extends Migration
             $table->timestamp('archived_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('vendor_id')->references('id')->on('vendors');
-            $table->foreign('employee_id')->references('id')->on('employees');
-            $table->foreign('outlet_id')->references('id')->on('outlets');
-            $table->foreign('storage_id')->references('id')->on('storages');
+            $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('outlet_id')->references('id')->on('outlets')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('storage_id')->references('id')->on('storages')->onDelete('RESTRICT')->onUpdate('RESTRICT');
         });
     }
 

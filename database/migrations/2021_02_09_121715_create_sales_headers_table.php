@@ -23,6 +23,10 @@ class CreateSalesHeadersTable extends Migration
             $table->timestamp('posting_date')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('archived_at')->nullable();
             $table->timestamps();
+
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('outlet_id')->references('id')->on('outlets')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('storage_id')->references('id')->on('storages')->onDelete('RESTRICT')->onUpdate('RESTRICT');
         });
     }
 
