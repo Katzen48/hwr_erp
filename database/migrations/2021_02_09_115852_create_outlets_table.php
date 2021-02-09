@@ -23,8 +23,8 @@ class CreateOutletsTable extends Migration
             $table->string('country')->default('');
             $table->timestamps();
 
-            $table->foreign("local_storage_id")->references('id')->on("storage");
-            $table->foreign("shipping_storage_id")->references('id')->on("storage");
+            $table->foreign('local_storage_id')->references('id')->on('storages');
+            $table->foreign('shipping_storage_id')->references('id')->on('storages');
         });
     }
 
