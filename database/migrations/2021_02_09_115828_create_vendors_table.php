@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemsTable extends Migration
+class CreateVendorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('vendors', function (Blueprint $table) {
             $table->id();
-            $table->string('description')->default('');
-            $table->enum('storage_posting_method', ['FIFO', 'LIFO'])->default('FIFO');
+            $table->string('name')->default('');
+            $table->string('address')->default('');
+            $table->string('postcode')->default('');
+            $table->string('state')->default('');
+            $table->string('country')->default('');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('vendors');
     }
 }

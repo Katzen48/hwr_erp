@@ -2,6 +2,7 @@
 
 namespace App\Models\SCM;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,8 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property integer $id
  * @property string $description
- * @property \DateTimeImmutable $created_at
- * @property \DateTimeImmutable $updated_at
+ * @property string $storage_posting_method // FIFO or LIFO
+ * @property CarbonInterface $created_at
+ * @property CarbonInterface $updated_at
  * @property Collection|ItemVariant $item_variants
  */
 class Item extends Model
