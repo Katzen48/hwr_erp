@@ -28,4 +28,6 @@ use Illuminate\Database\Eloquent\Model;
 class SalesLine extends Model
 {
     use HasFactory;
+
+    protected $dates = ['archived_at'];
 }
