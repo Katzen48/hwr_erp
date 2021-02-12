@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <br/>
-    <h3>Welcome to ChickClothes</h3>
+    <h4>Welcome to ChickClothes</h4>
     <Login />
   </div>
 </template>
