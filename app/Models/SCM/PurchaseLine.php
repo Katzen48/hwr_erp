@@ -5,6 +5,7 @@ namespace App\Models\SCM;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class PurchaseLine
@@ -30,4 +31,9 @@ class PurchaseLine extends Model
     use HasFactory;
 
     protected $dates = ['archived_at'];
+
+    public function purchaseHeader() : BelongsTo
+    {
+        return $this->belongsTo(PurchaseHeader::class);
+    }
 }

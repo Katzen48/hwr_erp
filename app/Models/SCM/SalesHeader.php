@@ -25,4 +25,9 @@ class SalesHeader extends Model
     use HasFactory;
 
     protected $dates = ['posting_date','archived_at'];
+
+    public function sales_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SalesLine::class, "line_no");
+    }
 }

@@ -27,4 +27,9 @@ class PurchaseHeader extends Model
     use HasFactory;
 
     protected $dates = ['delivery_date', 'posting_date', 'archived_at'];
+
+    public function purchase_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PurchaseLine::class, "line_no");
+    }
 }
