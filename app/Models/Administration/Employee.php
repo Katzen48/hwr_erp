@@ -19,6 +19,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property boolean $salesperson
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
+ *
+ * @property Outlet $outlet;
+ * @property Collection|PurchaseHeader $purchase_headers
+ * @property Collection|SalesHeader $sales_header
  */
 class Employee extends Model
 {
@@ -28,4 +32,19 @@ class Employee extends Model
         'purchaser' => 'boolean',
         'salesperson' => 'boolean',
     ];
+
+    public function outlet() : \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Outlet::class);
+    }
+
+    public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PurchaseHeader::class, 'employee_id');
+    }
+
+    public function sales_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SalesHeader::class, 'employee_id');
+    }
 }

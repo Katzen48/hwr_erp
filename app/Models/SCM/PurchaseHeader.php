@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  * @property CarbonInterface $archived_at
+ *
+ * @property Collection|PurchaseLine $purchase_lines
+ * @property Vendor $vendor
  */
 class PurchaseHeader extends Model
 {
@@ -31,5 +34,10 @@ class PurchaseHeader extends Model
     public function purchase_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PurchaseLine::class);
+    }
+
+    public function vendor() : \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Vendor::class);
     }
 }

@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  * @property CarbonInterface $archived_at
+ *
+ * @property Collection|SalesLine $sales_lines
  */
 class SalesHeader extends Model
 {

@@ -6,6 +6,7 @@ use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Class PurchaseLine
@@ -25,6 +26,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  * @property CarbonInterface $archived_at
+ *
+ * @property PurchaseHeader $purchaseHeader
+ * @property Item $item
  */
 class PurchaseLine extends Model
 {
@@ -37,4 +41,12 @@ class PurchaseLine extends Model
     {
         return $this->belongsTo(PurchaseHeader::class);
     }
+
+    public function item() : HasOne
+    {
+        return $this->hasOne(Item::class);
+    }
+
+    //TODO: ItemVariant
+
 }
