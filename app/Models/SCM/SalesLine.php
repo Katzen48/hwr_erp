@@ -29,6 +29,7 @@ class SalesLine extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'line_no';
     protected $dates = ['archived_at'];
 
     public function salesHeader() : BelongsTo

@@ -34,9 +34,9 @@ class SalesLineController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\SalesLine  $salesLine
-     * @return \Illuminate\Http\Response
+     * @return SalesLine
      */
-    public function show(SalesLine $salesLine)
+    public function show($salesLine)
     {
         return $salesLine;
     }

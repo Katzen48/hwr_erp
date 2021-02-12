@@ -17,17 +17,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('application/structure', [\App\Http\Controllers\API\Application\StructureController::class, 'routes']);
 
 Route::group(['prefix' => 'scm'], function() {
-   Route::apiResource('item', \App\Http\Controllers\API\SCM\ItemController::class);
-   Route::apiResource('item.variant', \App\Http\Controllers\API\SCM\ItemVariantController::class);
-   Route::apiResource('storage', \App\Http\Controllers\API\SCM\StorageController::class);
-   Route::apiResource('outlet', \App\Http\Controllers\API\SCM\OutletController::class);
-   Route::apiResource('vendor', \App\Http\Controllers\API\SCM\VendorController::class);
-   Route::apiResource('purchaseheader', \App\Http\Controllers\API\SCM\PurchaseHeaderController::class);
-   Route::apiResource('purchaseheader.purchaseline', \App\Http\Controllers\API\SCM\PurchaseLineController::class);
-   Route::apiResource('salesheader', \App\Http\Controllers\API\SCM\SalesHeaderController::class);
-   Route::apiResource('salesheader.salesline', \App\Http\Controllers\API\SCM\SalesLineController::class);
+   Route::apiResource('items', \App\Http\Controllers\API\SCM\ItemController::class);
+   Route::apiResource('items.item_variants', \App\Http\Controllers\API\SCM\ItemVariantController::class);
+   Route::apiResource('storages', \App\Http\Controllers\API\SCM\StorageController::class);
+   Route::apiResource('outlets', \App\Http\Controllers\API\SCM\OutletController::class);
+   Route::apiResource('vendors', \App\Http\Controllers\API\SCM\VendorController::class);
+   Route::apiResource('purchase_header', \App\Http\Controllers\API\SCM\PurchaseHeaderController::class);
+   Route::apiResource('purchase_header.purchase_lines', \App\Http\Controllers\API\SCM\PurchaseLineController::class);
+   Route::apiResource('sales_header', \App\Http\Controllers\API\SCM\SalesHeaderController::class);
+   Route::apiResource('sales_header.sales_lines', \App\Http\Controllers\API\SCM\SalesLineController::class);
 });
 
 Route::group(['prefix' => 'administration'], function() {
-    Route::apiResource('employee', \App\Http\Controllers\API\SCM\EmployeeController::class);
+    Route::apiResource('employees', \App\Http\Controllers\API\SCM\EmployeeController::class);
 });
