@@ -5,10 +5,13 @@ namespace App\Http\Controllers\API\SCM;
 use App\Http\Controllers\Controller;
 use App\Models\SCM\SalesHeader;
 use App\Models\SCM\SalesLine;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class SalesLineController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,7 @@ class SalesLineController extends Controller
      */
     public function index(SalesHeader $salesHeader)
     {
-        return $salesHeader->sales_lines()->simplePaginate(100);
+        return \App\Http\Resources\SCM\SalesHeader::collection($salesHeader->sales_lines()->simplePaginate(100));
     }
 
     /**
@@ -36,9 +39,9 @@ class SalesLineController extends Controller
      * @param  \App\Models\SCM\SalesLine  $salesLine
      * @return SalesLine
      */
-    public function show($salesLine)
+    public function show(SalesHeader $salesHeader, SalesLine $salesLine)
     {
-        return $salesLine;
+        return \App\Http\Resources\SCM\SalesHeader::make($salesLine);
     }
 
     /**
@@ -48,7 +51,7 @@ class SalesLineController extends Controller
      * @param  \App\Models\SCM\SalesLine  $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SalesLine $salesLine)
+    public function update(Request $request, SalesHeader $salesHeader, SalesLine $salesLine)
     {
         //
     }
@@ -59,7 +62,7 @@ class SalesLineController extends Controller
      * @param  \App\Models\SCM\SalesLine  $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SalesLine $salesLine)
+    public function destroy(SalesHeader $salesHeader, SalesLine $salesLine)
     {
         //
     }

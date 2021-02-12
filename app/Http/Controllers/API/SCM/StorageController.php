@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\Storage;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class StorageController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,7 @@ class StorageController extends Controller
      */
     public function index()
     {
-        return Storage::query()->simplePaginate(100);
+        return \App\Http\Resources\SCM\Storage::collection(Storage::query()->simplePaginate(100));
     }
 
     /**
@@ -37,7 +40,7 @@ class StorageController extends Controller
      */
     public function show(Storage $storage)
     {
-        return $storage;
+        return \App\Http\Resources\SCM\Storage::make($storage);
     }
 
     /**

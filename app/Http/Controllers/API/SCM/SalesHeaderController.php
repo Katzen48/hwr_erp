@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\SalesHeader;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class SalesHeaderController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,7 @@ class SalesHeaderController extends Controller
      */
     public function index()
     {
-        return SalesHeader::query()->simplePaginate(100);
+        return \App\Http\Resources\SCM\SalesHeader::collection(SalesHeader::query()->simplePaginate(100));
     }
 
     /**
@@ -37,7 +40,7 @@ class SalesHeaderController extends Controller
      */
     public function show(SalesHeader $salesHeader)
     {
-        return $salesHeader;
+        return \App\Http\Resources\SCM\SalesHeader::make($salesHeader);
     }
 
     /**

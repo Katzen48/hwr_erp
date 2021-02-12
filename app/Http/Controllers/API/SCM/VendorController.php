@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\Vendor;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class VendorController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,7 @@ class VendorController extends Controller
      */
     public function index()
     {
-        return Vendor::query()->simplePaginate(100);
+        return \App\Http\Resources\SCM\Vendor::collection(Vendor::query()->simplePaginate(100));
     }
 
     /**
@@ -37,7 +40,7 @@ class VendorController extends Controller
      */
     public function show(Vendor $vendor)
     {
-        return $vendor;
+        return \App\Http\Resources\SCM\Vendor::make($vendor);
     }
 
     /**

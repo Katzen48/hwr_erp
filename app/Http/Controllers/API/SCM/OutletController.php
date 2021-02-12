@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\Outlet;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class OutletController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,7 @@ class OutletController extends Controller
      */
     public function index()
     {
-        return Outlet::query()->simplePaginate(100);
+        return \App\Http\Resources\SCM\Outlet::collection(Outlet::query()->simplePaginate(100));
     }
 
     /**
@@ -37,7 +40,7 @@ class OutletController extends Controller
      */
     public function show(Outlet $outlet)
     {
-        return $outlet;
+        return \App\Http\Resources\SCM\Outlet::make($outlet);
     }
 
     /**

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\PurchaseHeader;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class PurchaseHeaderController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,7 @@ class PurchaseHeaderController extends Controller
      */
     public function index()
     {
-        return PurchaseHeader::query()->simplePaginate(100);
+        return \App\Http\Resources\SCM\PurchaseHeader::collection(PurchaseHeader::query()->simplePaginate(100));
     }
 
     /**
@@ -37,7 +40,7 @@ class PurchaseHeaderController extends Controller
      */
     public function show(PurchaseHeader $purchaseHeader)
     {
-        return $purchaseHeader;
+        return \App\Http\Resources\SCM\PurchaseHeader::make($purchaseHeader);
     }
 
     /**
