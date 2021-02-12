@@ -30,4 +30,9 @@ class SalesLine extends Model
     use HasFactory;
 
     protected $dates = ['archived_at'];
+
+    public function salesHeader() : BelongsTo
+    {
+        return $this->belongsTo(SalesHeader::class);
+    }
 }

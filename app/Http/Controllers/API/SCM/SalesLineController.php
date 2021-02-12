@@ -3,24 +3,20 @@
 namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
-use App\Models\SCM\Item;
-use App\Models\SCM\ItemVariant;
-use App\Traits\DashboardVisible;
-use Illuminate\Contracts\Pagination\Paginator;
+use App\Models\SCM\SalesHeader;
+use App\Models\SCM\SalesLine;
 use Illuminate\Http\Request;
 
-class ItemVariantController extends Controller
+class SalesLineController extends Controller
 {
-    use DashboardVisible;
-
     /**
      * Display a listing of the resource.
      *
-     * @return Paginator
+     * @return \Illuminate\Contracts\Pagination\Paginator
      */
-    public function index(Item $item)
+    public function index(SalesHeader $salesHeader)
     {
-        return $item->item_variants()->simplePaginate(100);
+        return $salesHeader->sales_lines()->simplePaginate(100);
     }
 
     /**
@@ -37,22 +33,22 @@ class ItemVariantController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SCM\ItemVariant  $itemVariant
+     * @param  \App\Models\SCM\SalesLine  $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function show(ItemVariant $itemVariant)
+    public function show(SalesLine $salesLine)
     {
-        return $itemVariant;
+        return $salesLine;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SCM\ItemVariant  $itemVariant
+     * @param  \App\Models\SCM\SalesLine  $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ItemVariant $itemVariant)
+    public function update(Request $request, SalesLine $salesLine)
     {
         //
     }
@@ -60,16 +56,11 @@ class ItemVariantController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\SCM\ItemVariant  $itemVariant
+     * @param  \App\Models\SCM\SalesLine  $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ItemVariant $itemVariant)
+    public function destroy(SalesLine $salesLine)
     {
         //
-    }
-
-    public static function getDashboardParent()
-    {
-        return 'Item';
     }
 }
