@@ -20,6 +20,7 @@ class CreateOutletsTable extends Migration
             $table->string('description')->default('');
             $table->string('address')->default('');
             $table->string('postcode')->default('');
+            $table->string('state')->default('');
             $table->string('country')->default('');
             $table->timestamps();
 
