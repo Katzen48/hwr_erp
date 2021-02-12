@@ -28,6 +28,6 @@ class SalesHeader extends Model
 
     public function sales_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(SalesLine::class, "line_no");
+        return $this->hasMany(SalesLine::class);
     }
 }

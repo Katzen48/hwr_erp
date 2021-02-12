@@ -30,6 +30,6 @@ class PurchaseHeader extends Model
 
     public function purchase_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PurchaseLine::class, "line_no");
+        return $this->hasMany(PurchaseLine::class);
     }
 }

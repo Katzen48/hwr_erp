@@ -35,5 +35,6 @@ class StorageEntry extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'entry_no';
     protected $dates = ['canceled_at', 'closed_at', 'posting_date', 'delivery_date'];
 }

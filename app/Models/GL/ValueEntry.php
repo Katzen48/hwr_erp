@@ -37,6 +37,7 @@ class ValueEntry extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'entry_no';
     protected $dates = ['posting_date', 'cancelled_at', 'closed_at'];
 }
 
