@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  * @property CarbonInterface $archived_at
+ *
+ * @property SalesHeader $salesHeader
  */
 class SalesLine extends Model
 {
