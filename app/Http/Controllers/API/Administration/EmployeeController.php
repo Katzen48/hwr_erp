@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\API\SCM;
+namespace App\Http\Controllers\API\Administration;
 
 use App\Http\Controllers\Controller;
 use App\Models\Administration\Employee;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return Employee::query()->simplePaginate(100);
+        return \App\Http\Resources\Administration\Employee::collection(Employee::query()->simplePaginate(100));
     }
 
     /**
@@ -37,7 +40,7 @@ class EmployeeController extends Controller
      */
     public function show(Employee $employee)
     {
-        return $employee;
+        return \App\Http\Resources\Administration\Employee::make($employee);
     }
 
     /**

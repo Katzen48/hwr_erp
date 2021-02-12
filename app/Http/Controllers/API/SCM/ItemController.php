@@ -20,7 +20,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return Item::query()->simplePaginate(100);
+        return \App\Http\Resources\SCM\Item::collection(Item::query()->simplePaginate(100));
     }
 
     /**
@@ -42,7 +42,7 @@ class ItemController extends Controller
      */
     public function show(Item $item)
     {
-        //
+        return \App\Http\Resources\SCM\Item::make($item);
     }
 
     /**

@@ -16,11 +16,12 @@ class ItemVariantController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Item $item
      * @return Paginator
      */
     public function index(Item $item)
     {
-        return $item->item_variants()->simplePaginate(100);
+        return \App\Http\Resources\SCM\ItemVariant::collection($item->item_variants()->simplePaginate(100));
     }
 
     /**
@@ -40,19 +41,20 @@ class ItemVariantController extends Controller
      * @param  \App\Models\SCM\ItemVariant  $itemVariant
      * @return \Illuminate\Http\Response
      */
-    public function show(ItemVariant $itemVariant)
+    public function show(Item $item, ItemVariant $itemVariant)
     {
-        return $itemVariant;
+        return \App\Http\Resources\SCM\ItemVariant::make($itemVariant);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SCM\ItemVariant  $itemVariant
+     * @param \Illuminate\Http\Request $request
+     * @param Item $item
+     * @param \App\Models\SCM\ItemVariant $itemVariant
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ItemVariant $itemVariant)
+    public function update(Request $request, Item $item, ItemVariant $itemVariant)
     {
         //
     }
@@ -63,7 +65,7 @@ class ItemVariantController extends Controller
      * @param  \App\Models\SCM\ItemVariant  $itemVariant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ItemVariant $itemVariant)
+    public function destroy(Item $item, ItemVariant $itemVariant)
     {
         //
     }

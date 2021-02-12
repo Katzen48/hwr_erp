@@ -5,10 +5,13 @@ namespace App\Http\Controllers\API\SCM;
 use App\Http\Controllers\Controller;
 use App\Models\SCM\PurchaseHeader;
 use App\Models\SCM\PurchaseLine;
+use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
 
 class PurchaseLineController extends Controller
 {
+    use DashboardVisible;
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,7 @@ class PurchaseLineController extends Controller
      */
     public function index(PurchaseHeader $purchaseHeader)
     {
-        return $purchaseHeader->purchase_lines()->simplePaginate(100);
+        return \App\Http\Resources\SCM\PurchaseLine::collection($purchaseHeader->purchase_lines()->simplePaginate(100));
     }
 
     /**
@@ -36,9 +39,9 @@ class PurchaseLineController extends Controller
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
      * @return \Illuminate\Http\Response
      */
-    public function show(PurchaseLine $purchaseLine)
+    public function show(PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
     {
-        return $purchaseLine;
+        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine);
     }
 
     /**
@@ -48,7 +51,7 @@ class PurchaseLineController extends Controller
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PurchaseLine $purchaseLine)
+    public function update(Request $request, PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
     {
         //
     }
@@ -59,7 +62,7 @@ class PurchaseLineController extends Controller
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PurchaseLine $purchaseLine)
+    public function destroy(PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
     {
         //
     }
