@@ -17,7 +17,12 @@ const routes = [
   },
   {
     path: '/einkaufsbestellungen',
-    name: 'Einkaufsbestellungen',
+    name: 'einkaufsbestellungen',
+    component: Table
+  },
+  {
+    path: '/personal',
+    name: 'personal',
     component: Table
   },
   {
