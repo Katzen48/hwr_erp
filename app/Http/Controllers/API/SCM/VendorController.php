@@ -65,4 +65,62 @@ class VendorController extends Controller
     {
         //
     }
+
+    static function getDashboardId()
+    {
+        return 'vendor';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'name',
+                'title' => 'Name', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'address',
+                'title' => 'Adresse.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'postcode',
+                'title' => 'PLZ', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'state',
+                'title' => 'Bundesland', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'country',
+                'title' => 'Land', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+        ];
+    }
 }

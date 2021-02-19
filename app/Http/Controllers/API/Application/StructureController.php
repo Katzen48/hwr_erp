@@ -18,14 +18,35 @@ class StructureController extends Controller
             $controller = explode('@', $route->action['controller'])[0];
 
             return method_exists($controller, 'getDashboardTitle') && method_exists($controller, 'getDashboardParent');
-        })->map(function ($route) {
+        })->mapWithKeys(function ($route) {
+            $apiUrl = '/' . $route->uri;
             $controller = explode('@', $route->action['controller'])[0];
+            $parent = null;
+
+            if($parentController = $controller::getDashboardParent()) {
+                $parent = $parentController::getDashboardId();
+            }
+
+            $entity = [
+                'api_url' => $apiUrl,
+                'title' => $controller::getDashboardTitle(),
+                'parent' => $parent,
+                'type' => 'List',
+                'fields' => $controller::getDashboardFields(),
+            ];
+
+            if($controller::isEditable()) {
+                $entity['edit'] = [
+                    'title' => $controller::getDashboardTitle(),
+                    'api_url' => $apiUrl,
+                    'type' => 'Card',
+                    'fields' => $controller::getEditFields(),
+                ];
+            }
 
             return [
-                'uri' => '/' . $route->uri,
-                'title' => $controller::getDashboardTitle(),
-                'parent' => $controller::getDashboardParent(),
+                $controller::getDashboardId() => $entity
             ];
-        })->values();
+        })->all();
     }
 }

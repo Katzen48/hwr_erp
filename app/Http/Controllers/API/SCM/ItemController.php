@@ -67,4 +67,41 @@ class ItemController extends Controller
     {
         //
     }
+
+    static function getDashboardId()
+    {
+        return 'item';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'title' => 'Beschreibung', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'storage_posting_method',
+                'title' => 'Lagerbuchungsmethode', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+        ];
+    }
 }

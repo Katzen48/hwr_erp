@@ -66,4 +66,95 @@ class PurchaseLineController extends Controller
     {
         //
     }
+
+    static function getDashboardId()
+    {
+        return 'purchase_line';
+    }
+
+    public static function getDashboardParent()
+    {
+        return PurchaseHeaderController::class;
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'line_no',
+                'title' => 'Zeilennr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'item_id',
+                'title' => 'Artikelnr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'item_variant_id',
+                'title' => 'Artikelvariantennr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'title' => 'Beschreibung', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'unit_price',
+                'title' => 'EK-Preis', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'vat_percent',
+                'title' => 'MwSt. %', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'vat_amount',
+                'title' => 'MwSt. Betrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'quantity',
+                'title' => 'Anzahl', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'line_amount',
+                'title' => 'Zeilenbetrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'user_id',
+                'title' => 'Benutzer-ID', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+        ];
+    }
 }
