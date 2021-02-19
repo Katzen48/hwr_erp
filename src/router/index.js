@@ -21,11 +21,6 @@ const routes = [
     component: Table
   },
   {
-    path: '/personal',
-    name: 'personal',
-    component: Table
-  },
-  {
     path: '/login',
     name: 'Login',
     component: () => import('../components/Login.vue')

@@ -30,7 +30,7 @@
 
 <style>
   .login {
-    width: 50%;
+    width: 30%;
     margin: auto;
   }
 </style>
