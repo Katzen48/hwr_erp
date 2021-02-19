@@ -38,6 +38,6 @@ class PurchaseHeader extends Model
 
     public function vendor() : \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Vendor::class);
+        return $this->belongsTo(Vendor::class);
     }
 }

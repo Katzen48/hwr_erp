@@ -30,18 +30,18 @@ class Outlet extends Model
 {
     use HasFactory;
 
-    public function local_storage() : \Illuminate\Database\Eloquent\Relations\HasOne
+    public function local_storage() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasOne(Storage::class, 'local_storage_id');
+        return $this->belongsTo(Storage::class, 'local_storage_id');
     }
 
-    public function global_storage() : \Illuminate\Database\Eloquent\Relations\HasOne
+    public function shipping_storage() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasOne(Storage::class, 'global_storage_id');
+        return $this->belongsTo(Storage::class, 'shipping_storage_id');
     }
 
-    public function employees() : \Illuminate\Database\Eloquent\Relations\HasMany
+    public function employee() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasMany(Employee::class);
+        return $this->belongsTo(Employee::class);
     }
 }

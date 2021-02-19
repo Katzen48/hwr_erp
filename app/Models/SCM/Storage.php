@@ -29,23 +29,25 @@ class Storage extends Model
 {
     use HasFactory;
 
+    /*
     public function outlets() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Outlet::class);
     }
+    */
 
     public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PurchaseHeader::class, 'storage_id');
+        return $this->hasMany(PurchaseHeader::class);
     }
 
     public function sales_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(SalesHeader::class, 'storage_id');
+        return $this->hasMany(SalesHeader::class);
     }
 
     public function storage_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(StorageEntry::class, 'storage_id');
+        return $this->hasMany(StorageEntry::class);
     }
 }

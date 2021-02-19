@@ -20,9 +20,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
  *
- * @property Outlet $outlet;
- * @property Collection|PurchaseHeader $purchase_headers
- * @property Collection|SalesHeader $sales_header
+ * @property \App\Models\SCM\Outlet $outlet;
+ * @property Collection|\App\Models\SCM\PurchaseHeader $purchase_headers
+ * @property Collection|\App\Models\SCM\SalesHeader $sales_header
  */
 class Employee extends Model
 {
@@ -35,16 +35,16 @@ class Employee extends Model
 
     public function outlet() : \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Outlet::class);
+        return $this->hasOne(\App\Models\SCM\Outlet::class);
     }
 
     public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PurchaseHeader::class, 'employee_id');
+        return $this->hasMany(\App\Models\SCM\PurchaseHeader::class, 'employee_id');
     }
 
     public function sales_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(SalesHeader::class, 'employee_id');
+        return $this->hasMany(\App\Models\SCM\SalesHeader::class, 'employee_id');
     }
 }

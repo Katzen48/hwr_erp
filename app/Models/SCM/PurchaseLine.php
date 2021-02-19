@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property PurchaseHeader $purchaseHeader
  * @property Item $item
+ * @property ItemVariant $item_variant
  */
 class PurchaseLine extends Model
 {
@@ -37,16 +38,19 @@ class PurchaseLine extends Model
     protected $primaryKey = 'line_no';
     protected $dates = ['archived_at'];
 
-    public function purchaseHeader() : BelongsTo
+    public function purchase_header() : BelongsTo
     {
         return $this->belongsTo(PurchaseHeader::class);
     }
 
     public function item() : HasOne
     {
-        return $this->hasOne(Item::class);
+        return $this->belongsTo(Item::class);
     }
 
-    //TODO: ItemVariant
+    public function item_variant()
+    {
+        return $this->belongsTo(ItemVariant::class);
+    }
 
 }

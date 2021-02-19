@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property CarbonInterface $updated_at
  * @property CarbonInterface $archived_at
  *
- * @property SalesHeader $salesHeader
+ * @property SalesHeader $sales_header
  */
 class SalesLine extends Model
 {
@@ -34,7 +34,7 @@ class SalesLine extends Model
     protected $primaryKey = 'line_no';
     protected $dates = ['archived_at'];
 
-    public function salesHeader() : BelongsTo
+    public function sales_header() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(SalesHeader::class);
     }
