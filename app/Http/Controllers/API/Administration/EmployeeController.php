@@ -65,4 +65,62 @@ class EmployeeController extends Controller
     {
         //
     }
+
+    static function getDashboardId()
+    {
+        return 'employee';
+    }
+
+    static function getDashboardFields()
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'first_name',
+                'title' => 'Vorname', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'last_name',
+                'title' => 'Last Name', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'position',
+                'title' => 'Position', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'purchaser',
+                'title' => 'Einkäufer', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'salesperson',
+                'title' => 'Verkäufer', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+        ];
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
 }

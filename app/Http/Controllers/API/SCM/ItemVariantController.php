@@ -72,6 +72,50 @@ class ItemVariantController extends Controller
 
     public static function getDashboardParent()
     {
-        return 'Item';
+        return ItemController::class;
+    }
+
+    static function getDashboardId()
+    {
+        return 'item_variant';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'title' => 'Beschreibung', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'unit_price',
+                'title' => 'Preis', // TODO i18n
+                'sortable' => true,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'vat_percent',
+                'title' => 'MwSt. %', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+        ];
     }
 }

@@ -65,4 +65,62 @@ class SalesHeaderController extends Controller
     {
         //
     }
+
+    static function getDashboardId()
+    {
+        return 'sales_header';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'employee_id',
+                'title' => 'Verkäufer', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'outlet_id',
+                'title' => 'Verkaufsstelle', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'storage_id',
+                'title' => 'Lager', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'posting_date',
+                'title' => 'Buchungsdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'order_amount',
+                'title' => 'Verkaufsbetrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+        ];
+    }
 }

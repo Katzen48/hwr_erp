@@ -65,4 +65,76 @@ class OutletController extends Controller
     {
         //
     }
+
+    static function getDashboardId()
+    {
+        return 'outlet';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'local_storage_id',
+                'title' => 'Vorort-Lager', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'shipping_storage_id',
+                'title' => 'Versand-Lager', // TODO i18n
+                'sortable' => true,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'title' => 'Beschreibung', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'address',
+                'title' => 'Adresse', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'postcode',
+                'title' => 'PLZ', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'state',
+                'title' => 'Bundesland', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'country',
+                'title' => 'Land', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+        ];
+    }
 }

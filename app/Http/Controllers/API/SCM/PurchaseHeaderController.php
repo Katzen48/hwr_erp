@@ -24,7 +24,7 @@ class PurchaseHeaderController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -35,7 +35,7 @@ class PurchaseHeaderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SCM\PurchaseHeader  $purchaseHeader
+     * @param \App\Models\SCM\PurchaseHeader $purchaseHeader
      * @return PurchaseHeader
      */
     public function show(PurchaseHeader $purchaseHeader)
@@ -46,8 +46,8 @@ class PurchaseHeaderController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SCM\PurchaseHeader  $purchaseHeader
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\SCM\PurchaseHeader $purchaseHeader
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, PurchaseHeader $purchaseHeader)
@@ -58,11 +58,83 @@ class PurchaseHeaderController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\SCM\PurchaseHeader  $purchaseHeader
+     * @param \App\Models\SCM\PurchaseHeader $purchaseHeader
      * @return \Illuminate\Http\Response
      */
     public function destroy(PurchaseHeader $purchaseHeader)
     {
         //
+    }
+
+    static function getDashboardId()
+    {
+        return 'purchase_header';
+    }
+
+    public static function isEditable(): bool
+    {
+        return true;
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'title' => 'ID', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'vendor_id',
+                'title' => 'Lieferant', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'employee_id',
+                'title' => 'Einkäufer', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'outlet_id',
+                'title' => 'Verkaufsstelle', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'storage_id',
+                'title' => 'Lager', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'delivery_date',
+                'title' => 'Lieferdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'posting_date',
+                'title' => 'Buchungsdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'purchase_amount',
+                'title' => 'Einkaufsbetrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+        ];
     }
 }
