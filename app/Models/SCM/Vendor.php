@@ -31,11 +31,11 @@ class Vendor extends Model
 
     public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PurchaseHeader::class, 'vendor_id');
+        return $this->hasMany(PurchaseHeader::class);
     }
 
     public function value_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(ValueEntry::class, 'vendor_id');
+        return $this->hasMany(ValueEntry::class);
     }
 }
