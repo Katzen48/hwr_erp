@@ -3,7 +3,9 @@
 namespace App\Models\SCM;
 
 use App\Models\Administration\Employee;
+use App\Models\GL\ValueEntry;
 use Carbon\CarbonInterface;
+use Dotenv\Parser\Value;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +27,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property Storage $local_storage
  * @property Storage $global_storage
  * @property Collection|Employee $employees
+ * @property Collection|PurchaseHeader $purchase_headers
+ * @property Collection|SalesHeader $sales_headers
+ * @property Collection|ValueEntry $value_entries
  */
 class Outlet extends Model
 {
@@ -42,6 +47,21 @@ class Outlet extends Model
 
     public function employee() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+
+    public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PurchaseHeader::class);
+    }
+
+    public function sales_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(SalesHeader::class);
+    }
+
+    public function value_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ValueEntry::class);
     }
 }
