@@ -8,6 +8,7 @@ use App\Models\GL\StorageEntry;
 use App\Models\GL\ValueEntry;
 use App\Models\SCM\PurchaseHeader;
 use App\Models\SCM\PurchaseLine;
+use App\Models\SCM\Storage;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -29,10 +30,7 @@ class PurchasePost
         DB::transaction(function() use ($purchaseHeaders) {
             $purchaseHeaders->each(function(PurchaseHeader $purchaseHeader) {
                 $purchaseHeader->purchase_lines()->each(function(PurchaseLine $purchaseLine) use ($purchaseHeader){
-                    //TODO 1. Lagerbestand prüfen
-
-
-                    // 2. Lagerposten erstellen
+                    //1. Lagerposten erstellen
                     $storageEntry = new StorageEntry();
                     $storageEntry->storage_id = $purchaseHeader->storage_id;
                     $storageEntry->item_id = $purchaseLine->item_id;
@@ -52,7 +50,7 @@ class PurchasePost
                     $storageEntry->canceled_at = null;
                     $storageEntry->closed_at = null;
 
-                    // 3. Wertposten erstellen
+                    // 2. Wertposten erstellen
                     $valueEntry = new ValueEntry();
                     $valueEntry->outlet_id = $purchaseHeader->outlet_id;
                     $valueEntry->item_id = $purchaseLine->item_id;
@@ -74,7 +72,9 @@ class PurchasePost
                     $valueEntry->canceled_at = null;
                     $valueEntry->closed_at = null;
 
-                    //TODO 4. Posten erfassen
+                    //3. Posten erfassen
+                    $storageEntry->save();
+                    $valueEntry->save();
                 });
             });
 
