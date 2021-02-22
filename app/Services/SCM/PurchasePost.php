@@ -69,10 +69,10 @@ class PurchasePost
                     $valueEntry->vat_percent = $purchaseLine->vat_percent;
                     $valueEntry->vat_amount = $purchaseLine->vat_amount;
                     $valueEntry->line_amount = $purchaseLine->line_amount;
-                    $storageEntry->applies_to_entry = null;
+                    $valueEntry->applies_to_entry = null;
                     $valueEntry->vendor_id = $purchaseHeader->vendor_id;
-                    $storageEntry->canceled_at = null;
-                    $storageEntry->closed_at = null;
+                    $valueEntry->canceled_at = null;
+                    $valueEntry->closed_at = null;
 
                     //TODO 4. Posten erfassen
                 });
