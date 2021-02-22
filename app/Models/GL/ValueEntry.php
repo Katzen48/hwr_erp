@@ -28,7 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $line_amount
  * @property int $applies_to_entry
  * @property int $vendor_id
- * @property CarbonInterface $cancelled_at
+ * @property CarbonInterface $canceled_at
  * @property CarbonInterface $closed_at
  * @property CarbonInterface $created_at
  * @property CarbonInterface $updated_at
