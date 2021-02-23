@@ -40,6 +40,9 @@ class CreateStorageEntriesTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('NO ACTION')->onDelete('NO ACTION');
             $table->foreign('employee_id')->references('id')->on('employees')->onUpdate('NO ACTION')->onDelete('NO ACTION');
             $table->foreign('applies_to_entry')->references('entry_no')->on('storage_entries')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            $table->index('posting_date');
+            $table->index('closed_at');
+            $table->index('created_at');
         });
     }
 

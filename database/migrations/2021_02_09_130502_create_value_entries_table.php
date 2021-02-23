@@ -30,10 +30,8 @@ class CreateValueEntriesTable extends Migration
             $table->float('vat_percent');
             $table->float('vat_amount');
             $table->float('line_amount');
-            $table->unsignedBigInteger('applies_to_entry')->nullable();
             $table->unsignedBigInteger('vendor_id')->nullable();
             $table->timestamp('canceled_at')->nullable();
-            $table->timestamp('closed_at')->nullable();
             $table->timestamps();
 
             $table->foreign('outlet_id')->references('id')->on('outlets')->onDelete('NO ACTION')->onUpdate('NO ACTION');
@@ -41,8 +39,9 @@ class CreateValueEntriesTable extends Migration
             $table->foreign('item_variant_id')->references('id')->on('item_variants')->onDelete('NO ACTION')->onUpdate('NO ACTION');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('NO ACTION')->onUpdate('NO ACTION');
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('NO ACTION')->onUpdate('NO ACTION');
-            $table->foreign('applies_to_entry')->references('entry_no')->on('value_entries')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('NO ACTION')->onUpdate('NO ACTION');
+            $table->index('posting_date');
+            $table->index('created_at');
         });
     }
 

@@ -27,6 +27,7 @@ use Ramsey\Collection\Collection;
  * @property CarbonInterface $archived_at
  *
  * @property Collection|PurchaseLine $purchase_lines
+ * @property Collection|PurchaseLine $open_purchase_lines
  * @property Vendor $vendor
  * @property Employee $employee
  * @property Outlet $outlet
@@ -43,6 +44,11 @@ class PurchaseHeader extends Model
     public function purchase_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PurchaseLine::class);
+    }
+
+    public function open_purchase_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->purchase_lines()->where('archived_at', '=', null);
     }
 
     public function vendor() : \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -73,5 +79,10 @@ class PurchaseHeader extends Model
     public function value_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ValueEntry::class, 'source_doc_id');
+    }
+
+    public function getNextLineNo($multiplier = 1) : int
+    {
+        return ($this->purchase_lines()->latest('line_no')->line_no ?? 0) + 100 * $multiplier;
     }
 }

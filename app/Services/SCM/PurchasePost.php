@@ -9,6 +9,7 @@ use App\Models\SCM\PurchaseHeader;
 use App\Models\SCM\PurchaseLine;
 use App\Models\SCM\Storage;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class PurchasePost
@@ -17,7 +18,7 @@ class PurchasePost
      * @param Collection|PurchaseHeader $purchaseHeaders
      *
      */
-    public function post($purchaseHeaders)
+    public static function post($purchaseHeaders)
     {
         /**
          * @var Collection|PurchaseHeader $purchaseHeaders
@@ -27,8 +28,10 @@ class PurchasePost
         }
 
         DB::transaction(function() use ($purchaseHeaders) {
-            $purchaseHeaders->each(function(PurchaseHeader $purchaseHeader) {
-                $purchaseHeader->purchase_lines()->each(function(PurchaseLine $purchaseLine) use ($purchaseHeader){
+            $carbon = Carbon::now();
+
+            $purchaseHeaders->each(function(PurchaseHeader $purchaseHeader) use ($carbon) {
+                $purchaseHeader->open_purchase_lines()->each(function(PurchaseLine $purchaseLine) use ($purchaseHeader, $carbon){
                     //1. Lagerposten erstellen
                     $storageEntry = new StorageEntry();
                     $storageEntry->storage_id = $purchaseHeader->storage_id;
@@ -66,15 +69,21 @@ class PurchasePost
                     $valueEntry->vat_percent = $purchaseLine->vat_percent;
                     $valueEntry->vat_amount = $purchaseLine->vat_amount;
                     $valueEntry->line_amount = $purchaseLine->line_amount * -1; // Wird negiert
-                    $valueEntry->applies_to_entry = null;
                     $valueEntry->vendor_id = $purchaseHeader->vendor_id;
                     $valueEntry->canceled_at = null;
-                    $valueEntry->closed_at = null;
 
                     //3. Posten erfassen
                     $storageEntry->save();
                     $valueEntry->save();
+
+                    $purchaseLine->archived_at = $carbon;
+                    $purchaseLine->save();
                 });
+
+                if($purchaseHeader->open_purchase_lines()->count() < 1) {
+                    $purchaseHeader->archived_at = $carbon;
+                    $purchaseHeader->save();
+                }
             });
         });
     }

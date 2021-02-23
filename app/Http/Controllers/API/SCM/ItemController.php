@@ -58,7 +58,7 @@ class ItemController extends Controller
         // TODO autogenerate from "fields" (editable etc.)
 
         $this->validate($request, [
-            'id' => 'integer|size:' . $item->id,
+            'id' => 'required|integer|size:' . $item->id,
             'description' => 'required|integer',
             'storage_posting_method' => Rule::in(['FIFO', 'LIFO']),
         ]);

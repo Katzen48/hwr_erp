@@ -26,6 +26,7 @@ use Ramsey\Collection\Collection;
  * @property CarbonInterface $archived_at
  *
  * @property Collection|SalesLine $sales_lines
+ * @property Collection|SalesLine $open_sales_lines
  * @property Employee $employee
  * @property Outlet $outlet
  * @property Storage $storage
@@ -41,6 +42,11 @@ class SalesHeader extends Model
     public function sales_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(SalesLine::class);
+    }
+
+    public function open_sales_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->sales_lines()->where('archived_at', '=', null);
     }
 
     public function employee() : \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -66,5 +72,10 @@ class SalesHeader extends Model
     public function value_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ValueEntry::class, 'source_doc_id');
+    }
+
+    public function getNextLineNo($multiplier = 1) : int
+    {
+        return ($this->sales_lines()->latest('line_no')->line_no ?? 0) + 100 * $multiplier;
     }
 }
