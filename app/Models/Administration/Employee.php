@@ -2,6 +2,7 @@
 
 namespace App\Models\Administration;
 
+use App\Models\GL\StorageEntry;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property \App\Models\SCM\Outlet $outlet;
  * @property Collection|\App\Models\SCM\PurchaseHeader $purchase_headers
  * @property Collection|\App\Models\SCM\SalesHeader $sales_header
+ * @property Collection|StorageEntry $storage_entries
  */
 class Employee extends Model
 {
@@ -33,9 +35,9 @@ class Employee extends Model
         'salesperson' => 'boolean',
     ];
 
-    public function outlet() : \Illuminate\Database\Eloquent\Relations\HasOne
+    public function outlet() : \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasOne(\App\Models\SCM\Outlet::class);
+        return $this->BelongsTo(\App\Models\SCM\Outlet::class);
     }
 
     public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
@@ -46,5 +48,10 @@ class Employee extends Model
     public function sales_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(\App\Models\SCM\SalesHeader::class, 'employee_id');
+    }
+
+    public function storage_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(StorageEntry::class, 'employee_id');
     }
 }

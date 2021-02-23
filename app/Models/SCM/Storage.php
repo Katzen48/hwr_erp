@@ -30,6 +30,7 @@ class Storage extends Model
     use HasFactory;
 
     /*
+     * TODO:
     public function outlets() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Outlet::class);
@@ -38,16 +39,16 @@ class Storage extends Model
 
     public function purchase_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(PurchaseHeader::class);
+        return $this->hasMany(PurchaseHeader::class, 'storage_id');
     }
 
     public function sales_headers() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(SalesHeader::class);
+        return $this->hasMany(SalesHeader::class, 'storage_id');
     }
 
     public function storage_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(StorageEntry::class);
+        return $this->hasMany(StorageEntry::class, 'storage_id');
     }
 }

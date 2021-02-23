@@ -2,11 +2,15 @@
 
 namespace App\Models\SCM;
 
+use App\Models\GL\StorageEntry;
+use App\Models\GL\ValueEntry;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Ramsey\Collection\Collection;
 
 /**
  * Class PurchaseLine
@@ -30,6 +34,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property PurchaseHeader $purchaseHeader
  * @property Item $item
  * @property ItemVariant $item_variant
+ * @property Collection|StorageEntry $storage_entries
+ * @property Collection|ValueEntry $value_entries
  */
 class PurchaseLine extends Model
 {
@@ -43,14 +49,23 @@ class PurchaseLine extends Model
         return $this->belongsTo(PurchaseHeader::class);
     }
 
-    public function item() : HasOne
+    public function item() : BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
-    public function item_variant()
+    public function item_variant() : BelongsTo
     {
         return $this->belongsTo(ItemVariant::class);
     }
 
+    public function storage_entries() : HasMany
+    {
+        return $this->hasMany(StorageEntry::class, 'source_doc_line_no');
+    }
+
+    public function value_entries() : HasMany
+    {
+        return $this->hasMany(ValueEntry::class, 'source_doc_line_no');
+    }
 }
