@@ -3,7 +3,6 @@
 
 namespace App\Services\SCM;
 
-
 use App\Models\GL\StorageEntry;
 use App\Models\GL\ValueEntry;
 use App\Models\SCM\PurchaseHeader;
@@ -66,7 +65,7 @@ class PurchasePost
                     $valueEntry->unit_price = $purchaseLine->unit_price;
                     $valueEntry->vat_percent = $purchaseLine->vat_percent;
                     $valueEntry->vat_amount = $purchaseLine->vat_amount;
-                    $valueEntry->line_amount = $purchaseLine->line_amount;
+                    $valueEntry->line_amount = $purchaseLine->line_amount * -1; // Wird negiert
                     $valueEntry->applies_to_entry = null;
                     $valueEntry->vendor_id = $purchaseHeader->vendor_id;
                     $valueEntry->canceled_at = null;
@@ -77,9 +76,6 @@ class PurchasePost
                     $valueEntry->save();
                 });
             });
-
         });
-
-
     }
 }
