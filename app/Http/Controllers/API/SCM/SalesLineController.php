@@ -87,70 +87,70 @@ class SalesLineController extends Controller
         return [
             [
                 'field' => 'line_no',
-                'title' => 'Zeilennr.', // TODO i18n
+                'headerName' => 'Zeilennr.', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'item_id',
-                'title' => 'Artikelnr.', // TODO i18n
+                'headerName' => 'Artikelnr.', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'item_variant_id',
-                'title' => 'Artikelvariantennr.', // TODO i18n
+                'headerName' => 'Artikelvariantennr.', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'description',
-                'title' => 'Beschreibung', // TODO i18n
+                'headerName' => 'Beschreibung', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'unit_price',
-                'title' => 'VK-Preis', // TODO i18n
+                'headerName' => 'VK-Preis', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'vat_percent',
-                'title' => 'MwSt. %', // TODO i18n
+                'headerName' => 'MwSt. %', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'vat_amount',
-                'title' => 'MwSt. Betrag', // TODO i18n
+                'headerName' => 'MwSt. Betrag', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'quantity',
-                'title' => 'Anzahl', // TODO i18n
+                'headerName' => 'Anzahl', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'line_amount',
-                'title' => 'Zeilenbetrag', // TODO i18n
+                'headerName' => 'Zeilenbetrag', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'user_id',
-                'title' => 'Benutzer-ID', // TODO i18n
+                'headerName' => 'Benutzer-ID', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,

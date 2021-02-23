@@ -81,42 +81,42 @@ class StorageController extends Controller
         return [
             [
                 'field' => 'id',
-                'title' => 'ID', // TODO i18n
+                'headerName' => 'ID', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'description',
-                'title' => 'Beschreibung', // TODO i18n
+                'headerName' => 'Beschreibung', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'address',
-                'title' => 'Adresse.', // TODO i18n
+                'headerName' => 'Adresse.', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'postcode',
-                'title' => 'PLZ', // TODO i18n
+                'headerName' => 'PLZ', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'state',
-                'title' => 'Bundesland', // TODO i18n
+                'headerName' => 'Bundesland', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'country',
-                'title' => 'Land', // TODO i18n
+                'headerName' => 'Land', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,

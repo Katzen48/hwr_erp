@@ -81,56 +81,56 @@ class OutletController extends Controller
         return [
             [
                 'field' => 'id',
-                'title' => 'ID', // TODO i18n
+                'headerName' => 'ID', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
             ],
             [
                 'field' => 'local_storage_id',
-                'title' => 'Vorort-Lager', // TODO i18n
+                'headerName' => 'Vorort-Lager', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
             ],
             [
                 'field' => 'shipping_storage_id',
-                'title' => 'Versand-Lager', // TODO i18n
+                'headerName' => 'Versand-Lager', // TODO i18n
                 'sortable' => true,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'description',
-                'title' => 'Beschreibung', // TODO i18n
+                'headerName' => 'Beschreibung', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'address',
-                'title' => 'Adresse', // TODO i18n
+                'headerName' => 'Adresse', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'postcode',
-                'title' => 'PLZ', // TODO i18n
+                'headerName' => 'PLZ', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'state',
-                'title' => 'Bundesland', // TODO i18n
+                'headerName' => 'Bundesland', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'country',
-                'title' => 'Land', // TODO i18n
+                'headerName' => 'Land', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,

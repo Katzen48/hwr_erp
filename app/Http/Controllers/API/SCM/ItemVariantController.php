@@ -90,28 +90,28 @@ class ItemVariantController extends Controller
         return [
             [
                 'field' => 'id',
-                'title' => 'ID', // TODO i18n
+                'headerName' => 'ID', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
             ],
             [
                 'field' => 'description',
-                'title' => 'Beschreibung', // TODO i18n
+                'headerName' => 'Beschreibung', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
             ],
             [
                 'field' => 'unit_price',
-                'title' => 'Preis', // TODO i18n
+                'headerName' => 'Preis', // TODO i18n
                 'sortable' => true,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'vat_percent',
-                'title' => 'MwSt. %', // TODO i18n
+                'headerName' => 'MwSt. %', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
