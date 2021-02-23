@@ -2,22 +2,39 @@
   <div>
     <p style="text-align:left; padding: 1em">ChickClothes</p>
     <b-nav tabs fill>
-      <b-nav-item to="/" exact exact-active-class="active">Startseite</b-nav-item>
-      <b-nav-item to="einkaufsbestellungen" exact exact-active-class="active">Einkaufsbestellungen</b-nav-item>
-      <b-nav-item to="verkaufsauftraege" exact exact-active-class="active">Verkaufsaufträge</b-nav-item>
-      <b-nav-item to="lager" exact exact-active-class="active">Lager</b-nav-item>
-      <b-nav-item to="artikel" exact exact-active-class="active">Artikel</b-nav-item>
-      <b-nav-item to="lagerposten" exact exact-active-class="active">Lagerposten</b-nav-item>
-      <b-nav-item to="verkaufsposten" exact exact-active-class="active">Verkaufsposten</b-nav-item>
-      <b-nav-item to="lieferanten" exact exact-active-class="active">Lieferanten</b-nav-item>
-      <b-nav-item to="mitarbeiter" exact exact-active-class="active">Mitarbeiter</b-nav-item>
-      <b-nav-item to="verkaufsstellen" exact exact-active-class="active">Verkaufsstellen</b-nav-item>
+      <b-nav-item exact exact-active-class="active" v-for="navItem in navItems" :key="navItem.title" :to="navItem.route">
+        {{ navItem.title }}
+      </b-nav-item>
       <b-nav-item to="suche" exact exact-active-class="active">
         <b-icon-search></b-icon-search>
       </b-nav-item>
       <b-nav-item to="konto" exact exact-active-class="active">
-        <b-icon-settings></b-icon-settings>
+        <b-icon-gear></b-icon-gear>
       </b-nav-item>
     </b-nav>
   </div>
 </template>
+
+<script>
+export default {
+
+    computed: {
+        navItems() {
+
+            let navItems = []
+            let entity = this.$store.state.application.menu
+
+            for (const [key, value] of Object.entries(entity)) {
+                if (!value.parent) {
+                    navItems.push({
+                        route: '/' + key, 
+                        title: value.title,
+                    });
+                }
+            }
+
+            return navItems
+        }
+    },
+}
+</script>
