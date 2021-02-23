@@ -25,6 +25,7 @@ use Ramsey\Collection\Collection;
  * @property Collection|PurchaseLine $purchase_lines
  * @property Collection|SalesLine $sales_lines
  * @property Collection|StorageEntry $storage_entries
+ * @property Collection|StorageEntry $open_storage_entries
  * @property Collection|ValueEntry $value_entries
  */
 class ItemVariant extends Model
@@ -54,5 +55,12 @@ class ItemVariant extends Model
     public function value_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ValueEntry::class);
+    }
+
+    public function open_storage_entries(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->storage_entries()->where([
+            ['closed_at', '=', null],
+        ]);
     }
 }
