@@ -38,6 +38,11 @@ trait DashboardVisible
         return static::getDashboardFields();
     }
 
+    static function getPrimaryKey(): string
+    {
+        return 'id';
+    }
+
     abstract static function getDashboardId(): string;
     abstract static function getDashboardFields(): array;
 }

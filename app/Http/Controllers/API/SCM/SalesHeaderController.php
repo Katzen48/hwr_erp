@@ -81,42 +81,42 @@ class SalesHeaderController extends Controller
         return [
             [
                 'field' => 'id',
-                'title' => 'ID', // TODO i18n
+                'headerName' => 'ID', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'employee_id',
-                'title' => 'Verkäufer', // TODO i18n
+                'headerName' => 'Verkäufer', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'outlet_id',
-                'title' => 'Verkaufsstelle', // TODO i18n
+                'headerName' => 'Verkaufsstelle', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'storage_id',
-                'title' => 'Lager', // TODO i18n
+                'headerName' => 'Lager', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'posting_date',
-                'title' => 'Buchungsdatum', // TODO i18n
+                'headerName' => 'Buchungsdatum', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
             ],
             [
                 'field' => 'order_amount',
-                'title' => 'Verkaufsbetrag', // TODO i18n
+                'headerName' => 'Verkaufsbetrag', // TODO i18n
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,

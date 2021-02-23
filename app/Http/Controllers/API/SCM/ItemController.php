@@ -8,6 +8,7 @@ use App\Traits\DashboardVisible;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class ItemController extends Controller
 {
@@ -54,7 +55,15 @@ class ItemController extends Controller
      */
     public function update(Request $request, Item $item)
     {
-        //
+        // TODO autogenerate from "fields" (editable etc.)
+
+        $this->validate($request, [
+            'id' => 'integer|size:' . $item->id,
+            'description' => 'required|integer',
+            'storage_posting_method' => Rule::in(['FIFO', 'LIFO']),
+        ]);
+
+        return \App\Http\Resources\SCM\Item::make($item);
     }
 
     /**
@@ -83,21 +92,21 @@ class ItemController extends Controller
         return [
             [
                 'field' => 'id',
-                'title' => 'ID', // TODO i18n
+                'headerName' => 'ID', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
             ],
             [
                 'field' => 'description',
-                'title' => 'Beschreibung', // TODO i18n
+                'headerName' => 'Beschreibung', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
-                'editable' => false,
+                'editable' => true,
             ],
             [
                 'field' => 'storage_posting_method',
-                'title' => 'Lagerbuchungsmethode', // TODO i18n
+                'headerName' => 'Lagerbuchungsmethode', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,

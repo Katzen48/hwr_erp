@@ -28,6 +28,7 @@ class StructureController extends Controller
             }
 
             $entity = [
+                'primary_key' => $controller::getPrimaryKey(),
                 'api_url' => $apiUrl,
                 'title' => $controller::getDashboardTitle(),
                 'parent' => $parent,
@@ -37,6 +38,7 @@ class StructureController extends Controller
 
             if($controller::isEditable()) {
                 $entity['edit'] = [
+                    'primary_key' => $controller::getPrimaryKey(),
                     'title' => $controller::getDashboardTitle(),
                     'api_url' => $apiUrl,
                     'type' => 'Card',
