@@ -32,7 +32,7 @@ class CreateValueEntriesTable extends Migration
             $table->float('line_amount');
             $table->unsignedBigInteger('applies_to_entry')->nullable();
             $table->unsignedBigInteger('vendor_id')->nullable();
-            $table->timestamp('cancelled_at')->nullable();
+            $table->timestamp('canceled_at')->nullable();
             $table->timestamp('closed_at')->nullable();
             $table->timestamps();
 
