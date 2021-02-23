@@ -12,10 +12,13 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
+    "sass-loader": "^11.0.1",
     "vue": "^2.6.12",
+    "vue-editable-grid": "^0.3.19",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
-    "vuex-persistedstate": "^4.0.0-beta.3"
+    "vuex-persistedstate": "^4.0.0-beta.3",
+    "webpack": "^5.23.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
