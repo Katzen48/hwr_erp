@@ -20,7 +20,7 @@
 export default {
 
     data() {
-        return { 
+        return {
             fields: [],
             items: [],
             entity: {},
@@ -65,7 +65,7 @@ export default {
 
         cellUpdated(cell) {
 
-            let url = this.base_url 
+            let url = this.base_url
                 + this.entity.api_url + '/'
                 + cell.row[this.entity.primary_key]
 
@@ -94,8 +94,7 @@ export default {
                                 } else {
                                     cell.markAsSuccess()
                                     cell.confirm()
-                                    this.items[cell.rowIndex] = res.data
-                                    cell.row = res.data
+                                    this.$set(this.items, cell.rowIndex, res.data)
                                 }
                             })
                     } else {
