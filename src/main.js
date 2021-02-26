@@ -3,15 +3,6 @@ import './plugins/axios'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
-import VueEditableGrid from 'vue-editable-grid'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import 'vue-editable-grid/dist/VueEditableGrid.css'
-
-Vue.use(BootstrapVue)
-Vue.use(BootstrapVueIcons)
-Vue.component('vue-editable-grid', VueEditableGrid)
 
 Vue.config.productionTip = false
 
