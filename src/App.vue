@@ -1,18 +1,43 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link v-for="route in routes" :key="route.title" :to="'/' + route.title.toLocaleLowerCase()"> {{route.title}} |</router-link>
-    </div>
-    <router-view/>
+    <Navbar/>
+    <router-view :key="$route.fullPath"/>
   </div>
 </template>
 
 <script>
+import Navbar from './components/Navbar'
+import Table from './components/Table'
+import Card from './components/Card'
+
 export default {
+
   name: "App",
+
+  components: {
+    Navbar,
+  },
+
   computed: {
     routes() {
       return window.menu;
+    }
+  },
+
+  created: async function() {
+
+    let res = await fetch('https://erp.katzen48.de/api/application/structure')
+    res = await res.json()
+    this.$store.commit("setMenu", res)
+
+    for (const [key, value] of Object.entries(res)) {
+        if (!value.parent) {
+            this.$router.addRoute({
+                path: '/' + key, 
+                name: key,
+                component: value.type == 'List' ? Table : Card,
+            });
+        }
     }
   }
 }
@@ -25,18 +50,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
