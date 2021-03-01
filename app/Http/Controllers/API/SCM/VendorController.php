@@ -99,6 +99,11 @@ class VendorController extends Controller
         return 'vendor';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.vendor', 2);
+    }
+
     public static function isEditable(): bool
     {
         return true;

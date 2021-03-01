@@ -104,6 +104,11 @@ class EmployeeController extends Controller
         return 'employee';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.employee', 2);
+    }
+
     static function getDashboardFields()
     {
         return [

@@ -170,6 +170,11 @@ class PurchaseLineController extends Controller
         return 'purchase_line';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.purchase_line', 2);
+    }
+
     public static function getDashboardParent()
     {
         return PurchaseHeaderController::class;

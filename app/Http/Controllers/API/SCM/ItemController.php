@@ -103,6 +103,11 @@ class ItemController extends Controller
         return true;
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.item', 2);
+    }
+
     static function getDashboardFields(): array
     {
         return [
