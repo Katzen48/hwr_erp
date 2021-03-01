@@ -8,6 +8,7 @@ use App\Models\SCM\ItemVariant;
 use App\Traits\DashboardVisible;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class ItemVariantController extends Controller
 {
@@ -28,11 +29,21 @@ class ItemVariantController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\ItemVariant
      */
-    public function store(Request $request)
+    public function store(Item $item, Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'description' => ['string', 'max:255'],
+            'unit_price' => ['numeric'],
+            'vat_percent' => ['numeric']
+        ]);
+        $validated = array_merge($validated, ["item_id" => $item->id]);
+
+        $itemVariant = ItemVariant::query()->forceCreate($validated);
+
+        $itemVariant = $itemVariant->refresh();
+        return \App\Http\Resources\SCM\ItemVariant::make($itemVariant);
     }
 
     /**
@@ -56,7 +67,18 @@ class ItemVariantController extends Controller
      */
     public function update(Request $request, Item $item, ItemVariant $itemVariant)
     {
-        //
+        $validated = $this->validate($request, [
+            'item_id' => ['exists:items,id'],
+            'description' => ['string', 'max:255'],
+            'unit_price' => ['numeric'], // TODO , FLoat oder so?
+            'vat_percent' => ['numeric'] // TODO . 0.00 .. 99.99 beschränken?
+        ]);
+
+        $itemVariant->forceFill($validated);
+        $itemVariant->save();
+        $itemVariant = $itemVariant->refresh();
+
+        return \App\Http\Resources\SCM\ItemVariant::make($itemVariant);
     }
 
     /**
@@ -67,7 +89,12 @@ class ItemVariantController extends Controller
      */
     public function destroy(Item $item, ItemVariant $itemVariant)
     {
-        //
+        if(!$itemVariant->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     public static function getDashboardParent()

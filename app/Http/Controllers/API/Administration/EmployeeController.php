@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Administration\Employee;
 use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class EmployeeController extends Controller
 {
@@ -25,11 +26,25 @@ class EmployeeController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\Administration\Employee
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'outlet_id' => ['nullable', 'exists:employees,id'],
+            'first_name' => ['string', 'max:255'],
+            'last_name' => ['string', 'max:255'],
+            'position' => ['string', 'max:255'],
+            'purchaser' => ['boolean'],
+            'salesperson' => ['boolean']
+        ]);
+
+        $employee = new Employee();
+        $employee->forceFill($validated);
+
+        $employee->save();
+        $employee = $employee->refresh();
+        return \App\Http\Resources\Administration\Employee::make($employee);
     }
 
     /**
@@ -48,11 +63,24 @@ class EmployeeController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Administration\Employee  $employee
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\Administration\Employee
      */
     public function update(Request $request, Employee $employee)
     {
-        //
+        $validated = $this->validate($request, [
+            'outlet_id' => ['nullable', 'exists:employees,id'],
+            'first_name' => ['string', 'max:255'],
+            'last_name' => ['string', 'max:255'],
+            'position' => ['string', 'max:255'],
+            'purchaser' => ['boolean'],
+            'salesperson' => ['boolean']
+        ]);
+
+        $employee->forceFill($validated);
+        $employee->save();
+
+        $employee = $employee->refresh();
+        return  \App\Http\Resources\Administration\Employee::make($employee);
     }
 
     /**
@@ -63,7 +91,12 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        if(!$employee->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     static function getDashboardId()

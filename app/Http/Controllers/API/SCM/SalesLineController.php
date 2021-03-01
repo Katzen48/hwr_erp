@@ -7,6 +7,7 @@ use App\Models\SCM\SalesHeader;
 use App\Models\SCM\SalesLine;
 use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class SalesLineController extends Controller
 {
@@ -26,11 +27,87 @@ class SalesLineController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\SalesLine
      */
-    public function store(Request $request)
+    public function store(SalesHeader $salesHeader, Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'item_id' => ['nullable', 'exists:items,id'],
+            'item_variant_id' => ['nullable', 'exists:item_variants,id'],
+            'description' => ['string', 'max:255'],
+            'unit_price' => ['numeric'],
+            'vat_percent' => ['numeric'],
+            'vat_amount' => ['numeric'],
+            'quantity' => ['numeric'],
+            'line_amount' =>['numeric']
+        ]);
+
+        $validated = array_merge($validated, ['sales_header_id' => $salesHeader->id, 'line_no' => $salesHeader->getNextLineNo()]);
+
+        $salesLine = new SalesLine();
+        $salesLine->forceFill($validated);
+        $salesLine->user_id = auth()->user()->id ?? 1; // Todo;
+        $this->onValidate($salesLine);
+
+        $salesLine->save();
+        return \App\Http\Resources\SCM\SalesLine::make($salesLine);
+    }
+
+    public function onValidate(SalesLine $salesLine)
+    {
+        if($salesLine->isDirty('item_id'))
+        {
+            if (!$salesLine->item_variant_id)
+            {
+                if (!$salesLine->item_id)
+                {
+                    $salesLine->item_variant_id = null;
+                }
+                else
+                {
+                    if (!$salesLine->item->item_variants()->find($salesLine->item_variant_id))
+                    {
+                        $salesLine->item_variant_id = null;
+                    }
+                }
+            }
+        }
+
+        if($salesLine->isDirty('item_variant_id'))
+        {
+            if($salesLine->item_variant_id) {
+                $salesLine->description = $salesLine->item_variant->description;
+                $salesLine->unit_price = $salesLine->item_variant->unit_price;
+                $salesLine->vat_percent = $salesLine->item_variant->vat_percent;
+            }
+            else
+            {
+                $salesLine->description = "";
+                $salesLine->unit_price = 0;
+                $salesLine->vat_percent = 0;
+            }
+        }
+
+        if($salesLine->isDirty('unit_price') && $salesLine->unit_price)
+        {
+            $this->calcAmounts($salesLine);
+        }
+
+        if($salesLine->isDirty('vat_percent') && $salesLine->vat_percent)
+        {
+            $this->calcAmounts($salesLine);
+        }
+
+        if($salesLine->isDirty('quantity') && $salesLine->quantity)
+        {
+            $this->calcAmounts($salesLine);
+        }
+    }
+
+    public function calcAmounts(SalesLine $salesLine)
+    {
+        $salesLine->vat_amount = $salesLine->quantity * $salesLine->unit_price / (100 + $salesLine->vat_percent) * $salesLine->vat_percent;
+        $salesLine->line_amount = $salesLine->quantity * $salesLine->unit_price;
     }
 
     /**
@@ -53,7 +130,22 @@ class SalesLineController extends Controller
      */
     public function update(Request $request, SalesHeader $salesHeader, SalesLine $salesLine)
     {
-        //
+        $validated = $this->validate($request, [
+            'item_id' => ['nullable', 'exists:items,id'],
+            'item_variant_id' => ['nullable', 'exists:item_variants,id'],
+            'description' => ['string', 'max:255'],
+            'unit_price' => ['numeric'],
+            'vat_percent' => ['numeric'],
+            'vat_amount' => ['numeric'],
+            'quantity' => ['numeric'],
+            'line_amount' =>['numeric']
+        ]);
+
+        $salesLine->forceFill($validated);
+        $this->onValidate($salesLine);
+        $salesLine->save();
+
+        return \App\Http\Resources\SCM\SalesHeader::make($salesLine);
     }
 
     /**
@@ -64,7 +156,12 @@ class SalesLineController extends Controller
      */
     public function destroy(SalesHeader $salesHeader, SalesLine $salesLine)
     {
-        //
+        if(!$salesLine->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     static function getDashboardId()

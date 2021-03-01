@@ -9,6 +9,7 @@ use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\In;
 
 class ItemController extends Controller
 {
@@ -28,11 +29,19 @@ class ItemController extends Controller
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return Response
+     * @return \App\Http\Resources\SCM\Item
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'description' => ['string', 'max:255'],
+            'storage_posting_method' => [Rule::in('LIFO', 'FIFO')]
+        ]);
+
+        $item = Item::query()->forceCreate($validated);
+
+        $item = $item->refresh();
+        return \App\Http\Resources\SCM\Item::make($item);
     }
 
     /**
@@ -51,17 +60,20 @@ class ItemController extends Controller
      *
      * @param Request $request
      * @param Item $item
-     * @return Response
+     * @return \App\Http\Resources\SCM\Item
      */
     public function update(Request $request, Item $item)
     {
         // TODO autogenerate from "fields" (editable etc.)
 
-        $this->validate($request, [
-            'id' => 'required|integer|size:' . $item->id,
-            'description' => 'required|integer',
-            'storage_posting_method' => Rule::in(['FIFO', 'LIFO']),
+        $validated = $this->validate($request, [
+            'description' => ['string', 'max:255'],
+            'storage_posting_method' => ['required', Rule::in('LIFO', 'FIFO')]
         ]);
+
+        $item->forceFill($validated);
+        $item->save();
+        $item = $item->refresh();
 
         return \App\Http\Resources\SCM\Item::make($item);
     }
@@ -74,7 +86,11 @@ class ItemController extends Controller
      */
     public function destroy(Item $item)
     {
-        //
+        if(!$item->delete()){
+            abort(500);
+        }
+
+        return \Illuminate\Support\Facades\Response::noContent();
     }
 
     static function getDashboardId()

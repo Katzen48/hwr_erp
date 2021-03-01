@@ -76,6 +76,6 @@ class SalesHeader extends Model
 
     public function getNextLineNo($multiplier = 1) : int
     {
-        return ($this->sales_lines()->latest('line_no')->line_no ?? 0) + 100 * $multiplier;
+        return ($this->sales_lines()->latest('line_no')->first()->line_no ?? 0) + 100 * $multiplier;
     }
 }

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\SCM;
 use App\Http\Controllers\Controller;
 use App\Models\SCM\PurchaseHeader;
 use App\Traits\DashboardVisible;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class PurchaseHeaderController extends Controller
 {
@@ -29,7 +31,41 @@ class PurchaseHeaderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'vendor_id' => ['nullable', 'exists:vendors,id'],
+            'employee_id' => ['nullable', 'exists:employees,id'],
+            'outlet_id' => ['nullable', 'exists:outlets,id'],
+            'storage_id' => ['nullable', 'exists:storages,id'],
+            'delivery_date' => ['date'],
+            'posting_date' => ['date'],
+            'purchase_amount' => ['numeric']
+        ]);
+
+        $purchaseHeader = new PurchaseHeader($validated);
+        $purchaseHeader->employee_id = auth()->user()->employee->id ?? null;
+        $this->onValidate($purchaseHeader);
+
+        $purchaseHeader->save();
+        $purchaseHeader = $purchaseHeader->refresh();
+        return \App\Http\Resources\SCM\PurchaseHeader::make($purchaseHeader);
+    }
+
+    public function onValidate(PurchaseHeader $purchaseHeader)
+    {
+        if($purchaseHeader->isDirty('employee_id') && $purchaseHeader->employee_id)
+        {
+            $purchaseHeader->outlet_id = $purchaseHeader->employee->outlet_id;
+        }
+
+        if($purchaseHeader->isDirty('outlet_id') && $purchaseHeader->outlet_id)
+        {
+            $purchaseHeader->storage_id = $purchaseHeader->outlet->local_storage_id;
+        }
+
+        if(!$purchaseHeader->posting_date)
+        {
+            $purchaseHeader->posting_date = Carbon::now();
+        }
     }
 
     /**
@@ -48,11 +84,26 @@ class PurchaseHeaderController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\SCM\PurchaseHeader $purchaseHeader
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\PurchaseHeader
      */
     public function update(Request $request, PurchaseHeader $purchaseHeader)
     {
-        //
+        $validated = $this->validate($request, [
+            'vendor_id' => ['nullable', 'exists:vendors,id'],
+            'employee_id' => ['nullable', 'exists:employees,id'],
+            'outlet_id' => ['nullable', 'exists:outlets,id'],
+            'storage_id' => ['nullable', 'exists:storages,id'],
+            'delivery_date' => ['date'],
+            'posting_date' => ['date'],
+            'purchase_amount' => ['numeric']
+        ]);
+
+        $purchaseHeader->forceFill($validated);
+        $this->onValidate($purchaseHeader);
+        $purchaseHeader->save();
+        $purchaseHeader = $purchaseHeader->save();
+
+        return \App\Http\Resources\SCM\PurchaseHeader::make($purchaseHeader);
     }
 
     /**
@@ -63,7 +114,12 @@ class PurchaseHeaderController extends Controller
      */
     public function destroy(PurchaseHeader $purchaseHeader)
     {
-        //
+        if(!$purchaseHeader->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     static function getDashboardId()
