@@ -1,14 +1,12 @@
 <template>
   <div id="app">
-    <Navbar/>
+    <Navbar v-if="authenticated"/>
     <router-view :key="$route.fullPath"/>
   </div>
 </template>
 
 <script>
 import Navbar from './components/Navbar'
-import Table from './components/Table'
-import Card from './components/Card'
 
 export default {
 
@@ -19,26 +17,24 @@ export default {
   },
 
   computed: {
+    authenticated() {
+      return this.$store.state.application.authenticated;
+    },
     routes() {
-      return window.menu;
+      return this.$store.state.application.menu;
     }
   },
 
   created: async function() {
-
-    let res = await fetch('https://erp.katzen48.de/api/application/structure')
-    res = await res.json()
-    this.$store.commit("setMenu", res)
-
-    for (const [key, value] of Object.entries(res)) {
-        if (!value.parent) {
-            this.$router.addRoute({
-                path: '/' + key, 
-                name: key,
-                component: value.type == 'List' ? Table : Card,
-            });
-        }
+    if (this.$store.state.application.authenticated) {
+      await this.$store.dispatch('loadRoutes', this.$router);
     }
+    else if(this.$route.path.toLowerCase() !== '/login') {
+      await this.$router.push('signIn');
+    }
+  },
+  methods: {
+
   }
 }
 </script>

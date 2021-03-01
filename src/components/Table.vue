@@ -75,28 +75,23 @@ export default {
             let payload = cell.row
             payload[column] = cell.value
 
-            fetch(url, {
+            this.$axios.put(url, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                },
-                method: 'PUT',
-                body: JSON.stringify(payload),
+                }
             })
                 .then(res => {
                     let status = res.status
                     if (status === 200 || status === 422) {
-                        res.json()
-                            .then(res => {
-                                if (status === 422) {
-                                    cell.markAsFailed(res.errors[column][0])
-                                    cell.confirm()
-                                } else {
-                                    cell.markAsSuccess()
-                                    cell.confirm()
-                                    this.$set(this.items, cell.rowIndex, res.data)
-                                }
-                            })
+                      if (status === 422) {
+                          cell.markAsFailed(res.data.errors[column][0])
+                          cell.confirm()
+                      } else {
+                          cell.markAsSuccess()
+                          cell.confirm()
+                          this.$set(this.items, cell.rowIndex, res.data.data)
+                      }
                     } else {
                         cell.markAsFailed(res.statusText)
                         cell.confirm()

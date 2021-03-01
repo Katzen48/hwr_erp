@@ -19,7 +19,7 @@ export default {
     mounted() {
         this.entity = this.$store.state.application.menu[this.$route.name]
         this.fields = this.entity.fields
-        fetch(this.base_url + this.entity.api_url)
+        this.$axios.get(this.base_url + this.entity.api_url)
             .then(res => res.json())
             .then(res => {
                 this.items = res.data
@@ -40,29 +40,24 @@ export default {
             let payload = cell.row
             payload[column] = cell.value
 
-            fetch(url, {
+            this.$axios.put(url, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                },
-                method: 'PUT',
-                body: JSON.stringify(payload),
+                }
             })
                 .then(res => {
                     let status = res.status
                     if (status === 200 || status === 422) {
-                        res.json()
-                            .then(res => {
-                                if (status === 422) {
-                                    cell.markAsFailed(res.errors[column][0])
-                                    cell.confirm()
-                                } else {
-                                    cell.markAsSuccess()
-                                    cell.confirm()
-                                    this.items[cell.rowIndex] = res.data
-                                    cell.row = res.data
-                                }
-                            })
+                      if (status === 422) {
+                          cell.markAsFailed(res.data.errors[column][0])
+                          cell.confirm()
+                      } else {
+                          cell.markAsSuccess()
+                          cell.confirm()
+                          this.items[cell.rowIndex] = res.data.data
+                          cell.row = res.data
+                      }
                     } else {
                         cell.markAsFailed(res.statusText)
                         cell.confirm()

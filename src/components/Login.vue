@@ -1,14 +1,14 @@
 <template>
     <div class="login">
-        <form>
+        <form action="#" @submit.prevent="submit">
             <div class="form-group">
                 <label>Email address</label>
-                <input type="email" class="form-control form-control-lg" />
+                <input type="email" name="email" class="form-control form-control-lg" v-model="form.email" />
             </div>
 
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" class="form-control form-control-lg" />
+                <input type="password" name="password" class="form-control form-control-lg" v-model="form.password" />
             </div>
 
             <button type="submit" class="btn btn-dark btn-lg btn-block">Sign In</button>
@@ -21,10 +21,28 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex';
+
     export default {
         data() {
-            return {}
+            return {
+              form: {
+                email: '',
+                password: ''
+              }
+            }
+        },
+      methods: {
+        ...mapActions({
+          signIn: 'signIn'
+        }),
+        async submit() {
+            await this.signIn(this.form);
+
+            await this.$store.dispatch('loadRoutes', this.$router);
+            await this.$router.replace('/');
         }
+      }
     }
 </script>
 
