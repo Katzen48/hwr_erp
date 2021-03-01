@@ -169,6 +169,11 @@ class SalesLineController extends Controller
         return 'sales_line';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.sales_line', 2);
+    }
+
     public static function getDashboardParent()
     {
         return SalesHeaderController::class;

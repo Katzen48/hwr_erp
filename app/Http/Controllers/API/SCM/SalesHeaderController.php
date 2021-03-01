@@ -125,6 +125,11 @@ class SalesHeaderController extends Controller
         return 'sales_header';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.sales_header', 2);
+    }
+
     public static function isEditable(): bool
     {
         return true;

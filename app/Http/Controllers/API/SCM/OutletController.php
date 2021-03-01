@@ -105,6 +105,11 @@ class OutletController extends Controller
         return 'outlet';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.outlet', 2);
+    }
+
     public static function isEditable(): bool
     {
         return true;

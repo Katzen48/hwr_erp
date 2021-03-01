@@ -127,6 +127,11 @@ class PurchaseHeaderController extends Controller
         return 'purchase_header';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.purchase_header', 2);
+    }
+
     public static function isEditable(): bool
     {
         return true;

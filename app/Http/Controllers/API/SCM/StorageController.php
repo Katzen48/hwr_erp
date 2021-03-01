@@ -99,6 +99,11 @@ class StorageController extends Controller
         return 'storage';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.storage', 2);
+    }
+
     public static function isEditable(): bool
     {
         return true;

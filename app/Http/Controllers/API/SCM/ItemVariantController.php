@@ -107,6 +107,11 @@ class ItemVariantController extends Controller
         return 'item_variant';
     }
 
+    public static function getDashboardTitle(): string
+    {
+        return trans_choice('scm.item_variant', 2);
+    }
+
     public static function isEditable(): bool
     {
         return true;
