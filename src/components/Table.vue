@@ -32,7 +32,7 @@ export default {
 
         this.entity = this.$store.state.application.menu[this.$route.name]
         this.fields = this.entity.fields
-
+/*
         this.fields.push({
             editable: false,
             field: 'Edit',
@@ -40,14 +40,13 @@ export default {
             headerName: '',
             sortable: false,
         })
-
-        fetch(this.base_url + this.entity.api_url)
-            .then(res => res.json())
+*/
+        this.$axios.get(this.base_url + this.entity.api_url)
             .then(res => {
-                this.items = res.data
+                this.items = res.data.data
             })
     },
-
+/*
     updated() {
 
         let idx = this.fields.length - 1
@@ -60,7 +59,7 @@ export default {
         }
 
     },
-
+*/
     methods: {
 
         cellUpdated(cell) {
