@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\SCM\Storage;
 use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 
 class StorageController extends Controller
 {
@@ -25,11 +27,22 @@ class StorageController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\Storage
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'description' => ['string', 'max:255'],
+            'address' => ['string', 'max:255'],
+            'postcode' => ['string', 'max:255'],
+            'state' => ['string', 'max:255'],
+            'country' => ['string', 'max:255']
+        ]);
+
+        $storage = Storage::query()->forceCreate($validated);
+
+        $storage = $storage->refresh();
+        return \App\Http\Resources\SCM\Storage::make($storage);
     }
 
     /**
@@ -48,11 +61,22 @@ class StorageController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\SCM\Storage  $storage
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\Storage
      */
     public function update(Request $request, Storage $storage)
     {
-        //
+        $validated = $this->validate($request, [
+            'description' => ['string', 'max:255'],
+            'address' => ['string', 'max:255'],
+            'postcode' => ['string', 'max:255'],
+            'state' => ['string', 'max:255'],
+            'country' => ['string', 'max:255']
+        ]);
+
+        $storage->forceFill($validated);
+        $storage->save();
+        $storage = $storage->refresh();
+        return \App\Http\Resources\SCM\Storage::make($storage);
     }
 
     /**
@@ -63,7 +87,11 @@ class StorageController extends Controller
      */
     public function destroy(Storage $storage)
     {
-        //
+        if(!$storage->delete()) {
+            abort(500);
+        };
+
+        return Response::noContent();
     }
 
     static function getDashboardId()

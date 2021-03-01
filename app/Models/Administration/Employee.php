@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Collection|\App\Models\SCM\PurchaseHeader $purchase_headers
  * @property Collection|\App\Models\SCM\SalesHeader $sales_header
  * @property Collection|StorageEntry $storage_entries
+ * @property User $user
  */
 class Employee extends Model
 {
@@ -53,5 +54,10 @@ class Employee extends Model
     public function storage_entries() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(StorageEntry::class, 'employee_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'employee_id');
     }
 }

@@ -15,8 +15,8 @@ class CreateOutletsTable extends Migration
     {
         Schema::create('outlets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('local_storage_id');
-            $table->unsignedBigInteger('shipping_storage_id');
+            $table->unsignedBigInteger('local_storage_id')->nullable();
+            $table->unsignedBigInteger('shipping_storage_id')->nullable();
             $table->string('description')->default('');
             $table->string('address')->default('');
             $table->string('postcode')->default('');

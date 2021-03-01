@@ -7,6 +7,7 @@ use App\Models\SCM\PurchaseHeader;
 use App\Models\SCM\PurchaseLine;
 use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class PurchaseLineController extends Controller
 {
@@ -25,12 +26,89 @@ class PurchaseLineController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param PurchaseHeader $purchaseHeader
+     * @param \Illuminate\Http\Request $request
+     * @return \App\Http\Resources\SCM\PurchaseLine
      */
-    public function store(Request $request)
+    public function store(PurchaseHeader $purchaseHeader, Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'item_id' => ['nullable', 'exists:items,id'],
+            'item_variant_id' => ['nullable', 'exists:item_variants,id'],
+            'description' => ['string', 'max:255'],
+            'unit_price' => ['numeric'],
+            'vat_percent' => ['numeric'],
+            'vat_amount' => ['numeric'],
+            'quantity' => ['numeric'],
+            'line_amount' =>['numeric']
+        ]);
+        $validated = array_merge($validated, ['purchase_header_id' => $purchaseHeader->id, 'line_no' => $purchaseHeader->getNextLineNo()]);
+
+        $purchaseLine = new PurchaseLine();
+        $purchaseLine->forceFill($validated);
+        $purchaseLine->user_id = auth()->user()->id ?? 1; // TODO
+        $this->onValidate($purchaseLine);
+
+        $purchaseLine->save();
+        //$purchaseLine = $purchaseLine->refresh();
+        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine);
+    }
+
+    public function onValidate(PurchaseLine $purchaseLine)
+    {
+        if($purchaseLine->isDirty('item_id'))
+        {
+            if (!$purchaseLine->item_variant_id)
+            {
+                if (!$purchaseLine->item_id)
+                {
+                    $purchaseLine->item_variant_id = null;
+                }
+                else
+                {
+                    if (!$purchaseLine->item->item_variants()->find($purchaseLine->item_variant_id))
+                    {
+                        $purchaseLine->item_variant_id = null;
+                    }
+                }
+            }
+        }
+
+        if($purchaseLine->isDirty('item_variant_id'))
+        {
+            if($purchaseLine->item_variant_id) {
+                $purchaseLine->description = $purchaseLine->item_variant->description;
+                $purchaseLine->unit_price = $purchaseLine->item_variant->unit_price;
+                $purchaseLine->vat_percent = $purchaseLine->item_variant->vat_percent;
+            }
+            else
+            {
+                $purchaseLine->description = "";
+                $purchaseLine->unit_price = 0;
+                $purchaseLine->vat_percent = 0;
+            }
+        }
+
+        if($purchaseLine->isDirty('unit_price') && $purchaseLine->unit_price)
+        {
+            $this->calcAmounts($purchaseLine);
+        }
+
+        if($purchaseLine->isDirty('vat_percent') && $purchaseLine->vat_percent)
+        {
+            $this->calcAmounts($purchaseLine);
+        }
+
+        if($purchaseLine->isDirty('quantity') && $purchaseLine->quantity)
+        {
+            $this->calcAmounts($purchaseLine);
+        }
+    }
+
+    public function calcAmounts(PurchaseLine $purchaseLine)
+    {
+        $purchaseLine->vat_amount = $purchaseLine->quantity * $purchaseLine->unit_price / (100 + $purchaseLine->vat_percent) * $purchaseLine->vat_percent;
+        $purchaseLine->line_amount = $purchaseLine->quantity * $purchaseLine->unit_price;
     }
 
     /**
@@ -49,11 +127,26 @@ class PurchaseLineController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\PurchaseLine
      */
     public function update(Request $request, PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
     {
-        //
+        $validated = $this->validate($request, [
+            'item_id' => ['nullable', 'exists:items,id'],
+            'item_variant_id' => ['nullable', 'exists:item_variants,id'],
+            'description' => ['string', 'max:255'],
+            'unit_price' => ['numeric'],
+            'vat_percent' => ['numeric'],
+            'vat_amount' => ['numeric'],
+            'quantity' => ['numeric'],
+            'line_amount' =>['numeric']
+        ]);
+
+        $purchaseLine->forceFill($validated);
+        $this->onValidate($purchaseLine);
+        $purchaseLine->save();
+
+        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine);
     }
 
     /**
@@ -64,7 +157,12 @@ class PurchaseLineController extends Controller
      */
     public function destroy(PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
     {
-        //
+        if(!$purchaseLine->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     static function getDashboardId()

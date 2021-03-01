@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SCM\PurchaseHeader;
 use App\Models\SCM\SalesHeader;
 use App\Traits\DashboardVisible;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 
 class SalesHeaderController extends Controller
 {
@@ -25,11 +28,44 @@ class SalesHeaderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\SalesHeader
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'employee_id' => ['nullable', 'exists:employees,id'],
+            'outlet_id' => ['nullable', 'exists:outlets,id'],
+            'storage_id' => ['nullable', 'exists:storages,id'],
+            'posting_date' => ['date'],
+            'purchase_amount' => ['numeric']
+        ]);
+
+        $salesHeader = new SalesHeader($validated);
+        $salesHeader->employee_id = auth()->user()->employee_id ?? null;
+        $this->onValidate($salesHeader);
+
+        $salesHeader->save();
+        $salesHeader = $salesHeader->refresh();
+        return \App\Http\Resources\SCM\SalesHeader::make($salesHeader);
+
+    }
+
+    public function onValidate(SalesHeader $salesHeader)
+    {
+        if($salesHeader->isDirty('employee_id') && $salesHeader->employee_id)
+        {
+            $salesHeader->outlet_id = $salesHeader->employee->outlet_id;
+        }
+
+        if($salesHeader->isDirty('outlet_id') && $salesHeader->outlet_id)
+        {
+            $salesHeader->storage_id = $salesHeader->outlet->local_storage_id;
+        }
+
+        if(!$salesHeader->posting_date)
+        {
+            $salesHeader->posting_date = Carbon::now();
+        }
     }
 
     /**
@@ -48,11 +84,24 @@ class SalesHeaderController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\SCM\SalesHeader  $salesHeader
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\SalesHeader
      */
     public function update(Request $request, SalesHeader $salesHeader)
     {
-        //
+        $validated = $this->validate($request, [
+            'employee_id' => ['nullable', 'exists:employees,id'],
+            'outlet_id' => ['nullable', 'exists:outlets,id'],
+            'storage_id' => ['nullable', 'exists:storages,id'],
+            'posting_date' => ['date'],
+            'purchase_amount' => ['numeric']
+        ]);
+
+        $salesHeader->forceFill($validated);
+        $this->onValidate($salesHeader);
+        $salesHeader->save();
+        $salesHeader = $salesHeader->save();
+
+        return \App\Http\Resources\SCM\SalesHeader::make($salesHeader);
     }
 
     /**
@@ -63,7 +112,12 @@ class SalesHeaderController extends Controller
      */
     public function destroy(SalesHeader $salesHeader)
     {
-        //
+        if(!$salesHeader->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     static function getDashboardId()

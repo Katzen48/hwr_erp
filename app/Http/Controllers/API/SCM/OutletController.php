@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\SCM\Outlet;
 use App\Traits\DashboardVisible;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Validation\Rules\Exists;
 
 class OutletController extends Controller
 {
@@ -25,11 +27,24 @@ class OutletController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\Outlet
      */
     public function store(Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'local_storage_id' => ['exists:storages,id'],
+            'shipping_storage_id' => ['exists:storages,id'],
+            'description' => ['string', 'max:255'],
+            'address' => ['string', 'max:255'],
+            'postcode' => ['string', 'max:255'],
+            'state' => ['string', 'max:255'],
+            'country' => ['string', 'max:255']
+        ]);
+
+        $outlet = Outlet::query()->forceCreate($validated);
+
+        $outlet = $outlet->refresh();
+        return \App\Http\Resources\SCM\Outlet::make($outlet);
     }
 
     /**
@@ -48,11 +63,25 @@ class OutletController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\SCM\Outlet  $outlet
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\Outlet
      */
     public function update(Request $request, Outlet $outlet)
     {
-        //
+        $validated = $this->validate($request, [
+            'local_storage_id' => ['nullable', 'exists:storages,id'],
+            'shipping_storage_id' => ['nullable', 'exists:storages,id'],
+            'description' => ['string', 'max:255'],
+            'address' => ['string', 'max:255'],
+            'postcode' => ['string', 'max:255'],
+            'state' => ['string', 'max:255'],
+            'country' => ['string', 'max:255']
+        ]);
+
+        $outlet->forceFill($validated);
+        $outlet->save();
+        $outlet = $outlet->refresh();
+
+        return \App\Http\Resources\SCM\Outlet::make($outlet);
     }
 
     /**
@@ -63,7 +92,12 @@ class OutletController extends Controller
      */
     public function destroy(Outlet $outlet)
     {
-        //
+        if(!$outlet->delete())
+        {
+            abort(500);
+        }
+
+        return Response::noContent();
     }
 
     static function getDashboardId()
