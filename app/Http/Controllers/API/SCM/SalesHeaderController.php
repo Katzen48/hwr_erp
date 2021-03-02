@@ -141,8 +141,8 @@ class SalesHeaderController extends Controller
             [
                 'field' => 'id',
                 'headerName' => 'ID', // TODO i18n
-                'sortable' => false,
-                'filter' => false,
+                'sortable' => true,
+                'filter' => true,
                 'editable' => false,
             ],
             [
