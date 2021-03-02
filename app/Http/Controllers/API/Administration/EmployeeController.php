@@ -146,6 +146,7 @@ class EmployeeController extends Controller
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
+                'type' => 'boolean',
             ],
             [
                 'field' => 'salesperson',
@@ -153,6 +154,7 @@ class EmployeeController extends Controller
                 'sortable' => true,
                 'filter' => true,
                 'editable' => false,
+                'type' => 'boolean',
             ],
         ];
     }
