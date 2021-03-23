@@ -16,7 +16,7 @@ class PurchaseLineController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(PurchaseHeader $purchaseHeader)
     {
@@ -35,7 +35,7 @@ class PurchaseLineController extends Controller
         $validated = $this->validate($request, [
             'item_id' => ['nullable', 'exists:items,id'],
             'item_variant_id' => ['nullable', 'exists:item_variants,id'],
-            'description' => ['string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:255'],
             'unit_price' => ['numeric'],
             'vat_percent' => ['numeric'],
             'vat_amount' => ['numeric'],
@@ -47,6 +47,7 @@ class PurchaseLineController extends Controller
         $purchaseLine = new PurchaseLine();
         $purchaseLine->forceFill($validated);
         $purchaseLine->user_id = auth()->user()->id ?? 1; // TODO
+        $purchaseLine->line_no = $purchaseHeader->getNextLineNo();
         $this->onValidate($purchaseLine);
 
         $purchaseLine->save();
@@ -115,7 +116,7 @@ class PurchaseLineController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\PurchaseLine
      */
     public function show(PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
     {
@@ -134,7 +135,7 @@ class PurchaseLineController extends Controller
         $validated = $this->validate($request, [
             'item_id' => ['nullable', 'exists:items,id'],
             'item_variant_id' => ['nullable', 'exists:item_variants,id'],
-            'description' => ['string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:255'],
             'unit_price' => ['numeric'],
             'vat_percent' => ['numeric'],
             'vat_amount' => ['numeric'],
@@ -146,7 +147,7 @@ class PurchaseLineController extends Controller
         $this->onValidate($purchaseLine);
         $purchaseLine->save();
 
-        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine);
+        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine->refresh());
     }
 
     /**
@@ -185,6 +186,95 @@ class PurchaseLineController extends Controller
         return true;
     }
 
+    public static function getPrimaryKey(): string
+    {
+        return 'line_no';
+    }
+
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'line_no',
+                'headerName' => 'Zeilennr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'item_id',
+                'headerName' => 'Artikelnr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'item_variant_id',
+                'headerName' => 'Artikelvariantennr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'description',
+                'headerName' => 'Beschreibung', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'unit_price',
+                'headerName' => 'EK-Preis', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'currency',
+            ],
+            [
+                'field' => 'vat_percent',
+                'headerName' => 'MwSt. %', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'vat_amount',
+                'headerName' => 'MwSt. Betrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'currency',
+            ],
+            [
+                'field' => 'quantity',
+                'headerName' => 'Anzahl', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'line_amount',
+                'headerName' => 'Zeilenbetrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'currency',
+            ],
+            [
+                'field' => 'user_id',
+                'headerName' => 'Benutzer-ID', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+                'type' => 'numeric',
+            ],
+        ];
+    }
+
     static function getDashboardFields(): array
     {
         return [
@@ -201,6 +291,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'item_variant_id',
@@ -208,6 +299,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'description',
@@ -222,6 +314,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'currency',
             ],
             [
                 'field' => 'vat_percent',
@@ -229,6 +322,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'vat_amount',
@@ -236,6 +330,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'currency',
             ],
             [
                 'field' => 'quantity',
@@ -243,6 +338,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'line_amount',
@@ -250,6 +346,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'currency',
             ],
             [
                 'field' => 'user_id',
@@ -257,6 +354,7 @@ class PurchaseLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
         ];
     }

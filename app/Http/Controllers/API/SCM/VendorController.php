@@ -15,7 +15,7 @@ class VendorController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -48,7 +48,7 @@ class VendorController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\Vendor  $vendor
-     * @return Vendor
+     * @return \App\Http\Resources\SCM\Vendor
      */
     public function show(Vendor $vendor)
     {
@@ -107,6 +107,54 @@ class VendorController extends Controller
     public static function isEditable(): bool
     {
         return true;
+    }
+
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'name',
+                'headerName' => 'Name', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'address',
+                'headerName' => 'Adresse.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'postcode',
+                'headerName' => 'PLZ', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'state',
+                'headerName' => 'Bundesland', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'country',
+                'headerName' => 'Land', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+        ];
     }
 
     static function getDashboardFields(): array

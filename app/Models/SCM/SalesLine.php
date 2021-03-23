@@ -40,6 +40,7 @@ class SalesLine extends Model
     use HasFactory;
 
     protected $primaryKey = 'line_no';
+    public $incrementing = false;
     protected $dates = ['archived_at'];
 
     public function sales_header() : \Illuminate\Database\Eloquent\Relations\BelongsTo

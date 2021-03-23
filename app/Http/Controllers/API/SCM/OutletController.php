@@ -16,7 +16,7 @@ class OutletController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -51,7 +51,7 @@ class OutletController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\Outlet  $outlet
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\Outlet
      */
     public function show(Outlet $outlet)
     {

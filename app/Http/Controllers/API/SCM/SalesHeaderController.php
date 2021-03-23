@@ -17,7 +17,7 @@ class SalesHeaderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -72,7 +72,7 @@ class SalesHeaderController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\SalesHeader  $salesHeader
-     * @return SalesHeader
+     * @return \App\Http\Resources\SCM\SalesHeader
      */
     public function show(SalesHeader $salesHeader)
     {
@@ -99,7 +99,7 @@ class SalesHeaderController extends Controller
         $salesHeader->forceFill($validated);
         $this->onValidate($salesHeader);
         $salesHeader->save();
-        $salesHeader = $salesHeader->save();
+        $salesHeader = $salesHeader->refresh();
 
         return \App\Http\Resources\SCM\SalesHeader::make($salesHeader);
     }
@@ -172,6 +172,7 @@ class SalesHeaderController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'date',
             ],
             [
                 'field' => 'order_amount',

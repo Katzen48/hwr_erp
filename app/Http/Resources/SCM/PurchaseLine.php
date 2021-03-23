@@ -25,6 +25,7 @@ class PurchaseLine extends JsonResource
             'quantity' => $this->quantity,
             'line_amount' => $this->line_amount,
             'archived_at' => $this->archived_at,
+            'user_id' => $this->user_id,
         ];
     }
 }

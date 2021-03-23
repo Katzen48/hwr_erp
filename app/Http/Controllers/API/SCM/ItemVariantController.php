@@ -18,7 +18,7 @@ class ItemVariantController extends Controller
      * Display a listing of the resource.
      *
      * @param Item $item
-     * @return Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Item $item)
     {
@@ -50,7 +50,7 @@ class ItemVariantController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\ItemVariant  $itemVariant
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\ItemVariant
      */
     public function show(Item $item, ItemVariant $itemVariant)
     {
@@ -63,7 +63,7 @@ class ItemVariantController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param Item $item
      * @param \App\Models\SCM\ItemVariant $itemVariant
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\ItemVariant
      */
     public function update(Request $request, Item $item, ItemVariant $itemVariant)
     {

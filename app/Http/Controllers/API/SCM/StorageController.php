@@ -16,7 +16,7 @@ class StorageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -49,7 +49,7 @@ class StorageController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\SCM\Storage  $storage
-     * @return Storage
+     * @return \App\Http\Resources\SCM\Storage
      */
     public function show(Storage $storage)
     {

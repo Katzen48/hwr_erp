@@ -16,7 +16,7 @@ class PurchaseHeaderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -27,7 +27,7 @@ class PurchaseHeaderController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\PurchaseHeader
      */
     public function store(Request $request)
     {
@@ -72,7 +72,7 @@ class PurchaseHeaderController extends Controller
      * Display the specified resource.
      *
      * @param \App\Models\SCM\PurchaseHeader $purchaseHeader
-     * @return PurchaseHeader
+     * @return \App\Http\Resources\SCM\PurchaseHeader
      */
     public function show(PurchaseHeader $purchaseHeader)
     {
@@ -101,7 +101,7 @@ class PurchaseHeaderController extends Controller
         $purchaseHeader->forceFill($validated);
         $this->onValidate($purchaseHeader);
         $purchaseHeader->save();
-        $purchaseHeader = $purchaseHeader->save();
+        $purchaseHeader = $purchaseHeader->refresh();
 
         return \App\Http\Resources\SCM\PurchaseHeader::make($purchaseHeader);
     }
@@ -135,6 +135,63 @@ class PurchaseHeaderController extends Controller
     public static function isEditable(): bool
     {
         return true;
+    }
+
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'vendor_id',
+                'headerName' => 'Lieferant', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'employee_id',
+                'headerName' => 'Einkäufer', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'outlet_id',
+                'headerName' => 'Verkaufsstelle', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'storage_id',
+                'headerName' => 'Lager', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'delivery_date',
+                'headerName' => 'Lieferdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'date',
+            ],
+            [
+                'field' => 'posting_date',
+                'headerName' => 'Buchungsdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'date',
+            ],
+        ];
     }
 
     static function getDashboardFields(): array
@@ -181,6 +238,7 @@ class PurchaseHeaderController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'date',
             ],
             [
                 'field' => 'posting_date',
@@ -188,6 +246,7 @@ class PurchaseHeaderController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'date',
             ],
             [
                 'field' => 'purchase_amount',
