@@ -10,9 +10,12 @@
       @cell-updated="cellUpdated"
       @row-selected="rowSelected"
       @link-clicked="linkClicked"
+      @context-menu="contextMenu"
     >
       <template v-slot:header> </template>
     </vue-editable-grid>
+
+    <card v-if="edit_mode" :entity="entity.edit" :selectedItem="selectedItem" :fields="fields" :base_url="base_url" @close="editModeClosed"></card>
   </div>
 </template>
 
@@ -25,6 +28,8 @@ export default {
             items: [],
             entity: {},
             base_url: 'https://erp.katzen48.de',
+            edit_mode: false,
+            selectedItem: null
         }
     },
 
@@ -32,6 +37,8 @@ export default {
 
         this.entity = this.$store.state.application.menu[this.$route.name]
         this.fields = this.entity.fields
+
+        this.fields.find(field => field.field == this.entity.primary_key).type = 'link';
 /*
         this.fields.push({
             editable: false,
@@ -43,9 +50,17 @@ export default {
 */
         this.$axios.get(this.base_url + this.entity.api_url)
             .then(res => {
-                this.items = res.data.data
+                this.items = res.data.data;
+
+                setTimeout(() => {
+                    document.getElementById('cell0-0').click();
+                }, 500);
+
+                document.addEventListener('keydown', this.onKeyDown);
             })
     },
+
+
 /*
     updated() {
 
@@ -103,14 +118,44 @@ export default {
 
         },
 
-        rowSelected() {
-
+        contextMenu() {
+            //console.log('Context Menu opened');
         },
 
-        linkClicked() {
-
+        rowSelected(event) {
+            this.selectedItem = event.rowData;
         },
+
+        linkClicked(event) {
+            if(event.colData.field == this.entity.primary_key) {
+              this.selectedItem = event.rowData;
+              this.edit_mode = true;
+            }
+        },
+
+        editModeClosed() {
+            this.edit_mode = false;
+            this.$forceUpdate();
+            document.getElementById('cell0-0').click();
+        },
+
+        /**
+         *
+         * @param event KeyboardEvent
+         */
+        onKeyDown(event) {
+            if(event.ctrlKey && event.key === 'e') {
+              if(this.selectedItem) {
+                this.edit_mode = true;
+              }
+              event.preventDefault();
+            }
+        }
     },
+
+    destroyed() {
+        document.removeEventListener('keydown', this.onKeyDown);
+    }
 }
 </script>
 
