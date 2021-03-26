@@ -12,6 +12,8 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "core-js": "^3.6.5",
+    "moment": "^2.29.1",
+    "qs": "^6.10.1",
     "sass-loader": "^11.0.1",
     "vue": "^2.6.12",
     "vue-editable-grid": "^0.3.19",

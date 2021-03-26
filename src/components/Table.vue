@@ -12,8 +12,15 @@
       </b-button-group>
 
       <b-button-group class="mx-1">
-        <b-button @click="openChildEntity(key)" v-for="(value, key) in childEntities" v-bind:key="key" variant="info">
+        <b-button @click="openChildEntity(key)" :disabled="!selectedItem" v-for="(value, key) in childEntities" v-bind:key="key" variant="info">
           {{ value.title }}
+        </b-button>
+      </b-button-group>
+
+      <b-button-group class="mx-1">
+        <b-button @click="executeAction(value.url, key)" :disabled="!selectedItem" v-for="(value, key) in actions" v-bind:key="key" variant="primary">
+          {{ value.title }}
+          <b-spinner small v-if="actionState[key]"></b-spinner>
         </b-button>
       </b-button-group>
     </b-button-toolbar>
@@ -36,7 +43,7 @@
 
     <div v-if="shownChildEntity && selectedItem">
       <b-modal size="xl" :id="shownChildEntityModalId" ref="childEntityModal" @hide="editModeClosed" :visible="true" :title="childEntities[shownChildEntity].title">
-        <list :nestedEntity="childEntities[shownChildEntity]" :parentName="nestedEntityName || this.$route.name.toLowerCase()" :parentId="selectedItem[entity.primary_key]" :nestedEntityName="shownChildEntity"></list>
+        <list v-bind:key="'childEntities[shownChildEntity]' + '-' + randomId" :nestedEntity="childEntities[shownChildEntity]" :parentName="nestedEntityName || this.$route.name.toLowerCase()" :parentId="selectedItem[entity.primary_key]" :nestedEntityName="shownChildEntity"></list>
       </b-modal>
     </div>
   </div>
@@ -46,7 +53,7 @@
 export default {
     data() {
         return {
-            gridId: Math.random().toString(12).substring(3),
+            gridId: this.randomId(),
             fields: [],
             items: [],
             entity: {},
@@ -56,6 +63,8 @@ export default {
             create_mode: false,
             deleting: false,
             childEntities: {},
+            actions: {},
+            actionState: {},
             shownChildEntity: null,
             shownChildEntityModalId: Math.random().toString(12).substring(3),
         }
@@ -71,7 +80,7 @@ export default {
     },
 
     mounted() {
-        this.entity = this.nestedEntity || this.$store.state.application.menu[this.$route.name.toLowerCase()];
+        this.entity = this.nestedEntity ? Object.assign({}, this.nestedEntity) : Object.assign({}, this.$store.state.application.menu[this.$route.name.toLowerCase()]);
 
         if(this.nestedEntity) {
             this.entity.api_url = this.entity.api_url.replace(`{${this.parentName}}`, this.parentId);
@@ -82,6 +91,7 @@ export default {
         }
 
         this.fields = this.entity.fields;
+        this.actions = this.entity.actions;
 
         let primaryKey = this.fields.find(field => field.field == this.entity.primary_key);
         if(primaryKey) {
@@ -115,7 +125,6 @@ export default {
 
         cellUpdated(cell) {
             if(!this.editableFields.includes(cell.column.field)) {
-                console.log(this.items[cell.rowIndex]);
                 return;
             }
 
@@ -158,12 +167,48 @@ export default {
 
         },
 
+        randomId() {
+          return Math.random().toString(12).substring(3);
+        },
+
+        executeAction(actionUrl, key) {
+          if(!this.selectedItem) {
+              return;
+          }
+
+          this.$set(this.actionState, key, true);
+
+          let url = this.base_url
+              + this.entity.api_url + '/'
+              + this.selectedItem[this.entity.primary_key] + '/'
+              + actionUrl;
+
+          this.$axios.post(url, {}, {
+              'Accept': 'application/json'
+          }).then(res => {
+            if (res.data) {
+                alert(res.data);
+            }
+
+            this.refresh();
+          })
+          .catch(err => {
+            if(err.response.data.message) {
+                alert(err.response.data.message);
+            }
+
+            console.error(err);
+          }).finally(() => {
+            this.$set(this.actionState, key, false);
+          });
+        },
+
         contextMenu() {
             //console.log('Context Menu opened');
         },
 
         rowSelected(event) {
-            this.selectedItem = event.rowData;
+            this.$set(this, 'selectedItem', this.items[event.rowIndex]);
         },
 
         linkClicked(event) {

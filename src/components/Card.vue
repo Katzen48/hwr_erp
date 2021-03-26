@@ -16,10 +16,11 @@
             </div>
 
             <div v-else>
-                <b-form-input :value="edit ? item[field.field] : ''" :id="modalId + '-' + 'header' + '-' + field.field"
+                <b-form-input :value="edit && item[field.field] ? item[field.field].toString() : ''" :id="modalId + '-' + 'header' + '-' + field.field"
                               @change.native="fieldUpdated" :disabled="!field.editable" :ref="'field_' + field.field"
                               :aria-describedby="modalId + '-' + 'header' + '-' + field.field + '-feedback'"
-                              :state="feedbackState[field.field]" :type="formTypes[field.field] || 'text'">
+                              :state="feedbackState[field.field]" :type="formTypes[field.field] || 'text'"
+                              debounce="500">
                 </b-form-input>
             </div>
 
@@ -122,7 +123,10 @@ export default {
             }
 
             let payload = this.item
-            payload[field] = (this.types[field])(event.target.value);
+            payload[field] = new (this.types[field])(event.target.value);
+
+            console.log(event.target.value);
+            console.log(payload[field]);
 
             this.update(payload, field);
         },
@@ -135,7 +139,7 @@ export default {
             }
 
             let payload = this.item
-            payload[field] = (this.types[field])(event.target.checked);
+            payload[field] = new (this.types[field])(event.target.checked);
 
             this.update(payload, field);
         },
