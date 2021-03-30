@@ -41,6 +41,11 @@ class PurchaseHeader extends Model
 
     protected $dates = ['delivery_date', 'posting_date', 'archived_at'];
 
+    public function recalculatePurchaseAmount()
+    {
+        $this->purchase_amount = $this->purchase_lines()->sum('line_amount');
+    }
+
     public function purchase_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PurchaseLine::class);

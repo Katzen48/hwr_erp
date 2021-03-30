@@ -42,6 +42,7 @@ class PurchaseLine extends Model
     use HasFactory;
 
     protected $primaryKey = 'line_no';
+    public $incrementing = false;
     protected $dates = ['archived_at'];
 
     public function purchase_header() : BelongsTo

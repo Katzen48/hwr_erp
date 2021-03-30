@@ -30,7 +30,7 @@ class CreatePurchaseLinesTable extends Migration
 
             $table->primary(['purchase_header_id', 'line_no']);
 
-            $table->foreign('purchase_header_id')->references('id')->on('purchase_headers')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('purchase_header_id')->references('id')->on('purchase_headers')->onDelete('CASCADE')->onUpdate('RESTRICT');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('item_variant_id')->references('id')->on('item_variants')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('RESTRICT')->onUpdate('RESTRICT');

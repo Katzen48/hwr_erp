@@ -11,4 +11,5 @@ return [
     'sales_header' => 'Sales Header|Sales Headers',
     'sales_line' => 'Sales Line|Sales Lines',
     'employee' => 'Employee|Employees',
+    'post' => 'Post',
 ];

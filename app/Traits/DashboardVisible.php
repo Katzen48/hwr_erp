@@ -43,6 +43,11 @@ trait DashboardVisible
         return 'id';
     }
 
+    static function getActions(): array
+    {
+        return [];
+    }
+
     abstract static function getDashboardId(): string;
     abstract static function getDashboardFields(): array;
 }

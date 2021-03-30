@@ -39,6 +39,11 @@ class SalesHeader extends Model
 
     protected $dates = ['posting_date','archived_at'];
 
+    public function recalculateOrderAmount()
+    {
+        $this->order_amount = $this->sales_lines()->sum('line_amount');
+    }
+
     public function sales_lines() : \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(SalesLine::class);

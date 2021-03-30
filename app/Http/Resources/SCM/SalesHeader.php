@@ -19,7 +19,7 @@ class SalesHeader extends JsonResource
             'employee_id' => $this->employee_id,
             'outlet_id' => $this->outlet_id,
             'storage_id' => $this->storage_id,
-            'posting_date' => $this->posting_date,
+            'posting_date' => $this->posting_date ? $this->posting_date->toDateString() : null,
             'order_amount' => $this->order_amount,
             'archived_at' => $this->archived_at,
         ];

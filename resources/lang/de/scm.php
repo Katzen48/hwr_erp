@@ -11,4 +11,5 @@ return [
     'purchase_header' => 'Einkaufskopf|Einkaufsköpfe',
     'purchase_line' => 'Einkaufszeile|Einkaufszeilen',
     'employee' => 'Mitarbeiter|Mitarbeiter',
+    'post' => 'Buchen',
 ];

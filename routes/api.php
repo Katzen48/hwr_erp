@@ -27,6 +27,10 @@ use Illuminate\Support\Facades\Route;
         Route::apiResource('purchase_headers.purchase_lines', \App\Http\Controllers\API\SCM\PurchaseLineController::class);
         Route::apiResource('sales_headers', \App\Http\Controllers\API\SCM\SalesHeaderController::class);
         Route::apiResource('sales_headers.sales_lines', \App\Http\Controllers\API\SCM\SalesLineController::class);
+
+        // Posting
+        Route::post('sales_headers/{sales_header}/post', [\App\Http\Controllers\API\SCM\SalesHeaderController::class, 'post']);
+        Route::post('purchase_headers/{purchase_header}/post', [\App\Http\Controllers\API\SCM\PurchaseHeaderController::class, 'post']);
     });
 
     Route::group(['prefix' => 'administration'], function() {

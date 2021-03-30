@@ -16,11 +16,11 @@ class SalesLineController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(SalesHeader $salesHeader)
     {
-        return \App\Http\Resources\SCM\SalesHeader::collection($salesHeader->sales_lines()->simplePaginate(100));
+        return \App\Http\Resources\SCM\SalesLine::collection($salesHeader->sales_lines()->whereNull(['archived_at'])->simplePaginate(100));
     }
 
     /**
@@ -47,10 +47,11 @@ class SalesLineController extends Controller
         $salesLine = new SalesLine();
         $salesLine->forceFill($validated);
         $salesLine->user_id = auth()->user()->id ?? 1; // Todo;
+        $salesLine->line_no = $salesHeader->getNextLineNo();
         $this->onValidate($salesLine);
 
         $salesLine->save();
-        return \App\Http\Resources\SCM\SalesLine::make($salesLine);
+        return \App\Http\Resources\SCM\SalesLine::make($salesLine->refresh());
     }
 
     public function onValidate(SalesLine $salesLine)
@@ -102,6 +103,13 @@ class SalesLineController extends Controller
         {
             $this->calcAmounts($salesLine);
         }
+
+        $salesHeader = $salesLine->sales_header;
+
+        if($salesHeader) {
+            $salesHeader->recalculateOrderAmount();
+            $salesHeader->save();
+        }
     }
 
     public function calcAmounts(SalesLine $salesLine)
@@ -113,12 +121,12 @@ class SalesLineController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\SCM\SalesLine $salesLine
-     * @return SalesLine
+     * @param int $salesLine
+     * @return \App\Http\Resources\SCM\SalesHeader
      */
-    public function show(SalesHeader $salesHeader, SalesLine $salesLine)
+    public function show(SalesHeader $salesHeader, int $salesLine)
     {
-        return \App\Http\Resources\SCM\SalesHeader::make($salesLine);
+        return \App\Http\Resources\SCM\SalesLine::make($salesHeader->sales_lines()->findOrFail($salesLine));
     }
 
     /**
@@ -126,9 +134,9 @@ class SalesLineController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\SCM\SalesLine $salesLine
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\SalesHeader
      */
-    public function update(Request $request, SalesHeader $salesHeader, SalesLine $salesLine)
+    public function update(Request $request, SalesHeader $salesHeader, int $salesLine)
     {
         $validated = $this->validate($request, [
             'item_id' => ['nullable', 'exists:items,id'],
@@ -141,11 +149,13 @@ class SalesLineController extends Controller
             'line_amount' =>['numeric']
         ]);
 
-        $salesLine->forceFill($validated);
-        $this->onValidate($salesLine);
-        $salesLine->save();
+        $line = $salesHeader->sales_lines()->findOrFail($salesLine);
 
-        return \App\Http\Resources\SCM\SalesHeader::make($salesLine);
+        $line->forceFill($validated);
+        $this->onValidate($line);
+        $line->save();
+
+        return \App\Http\Resources\SCM\SalesLine::make($line->refresh());
     }
 
     /**
@@ -154,9 +164,11 @@ class SalesLineController extends Controller
      * @param \App\Models\SCM\SalesLine $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SalesHeader $salesHeader, SalesLine $salesLine)
+    public function destroy(SalesHeader $salesHeader, int $salesLine)
     {
-        if(!$salesLine->delete())
+        $line = $salesHeader->sales_lines()->findOrFail($salesLine);
+
+        if(!$line->delete())
         {
             abort(500);
         }
@@ -184,6 +196,95 @@ class SalesLineController extends Controller
         return true;
     }
 
+    public static function getPrimaryKey(): string
+    {
+        return 'line_no';
+    }
+
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'line_no',
+                'headerName' => 'Zeilennr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+            ],
+            [
+                'field' => 'item_id',
+                'headerName' => 'Artikelnr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'item_variant_id',
+                'headerName' => 'Artikelvariantennr.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'description',
+                'headerName' => 'Beschreibung', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'unit_price',
+                'headerName' => 'VK-Preis', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'currency',
+            ],
+            [
+                'field' => 'vat_percent',
+                'headerName' => 'MwSt. %', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'vat_amount',
+                'headerName' => 'MwSt. Betrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'currency',
+            ],
+            [
+                'field' => 'quantity',
+                'headerName' => 'Anzahl', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'numeric',
+            ],
+            [
+                'field' => 'line_amount',
+                'headerName' => 'Zeilenbetrag', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'currency',
+            ],
+            [
+                'field' => 'user_id',
+                'headerName' => 'Benutzer-ID', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => false,
+                'type' => 'numeric',
+            ],
+        ];
+    }
+
     static function getDashboardFields(): array
     {
         return [
@@ -200,6 +301,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'item_variant_id',
@@ -207,6 +309,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'description',
@@ -221,6 +324,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'currency',
             ],
             [
                 'field' => 'vat_percent',
@@ -228,6 +332,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'vat_amount',
@@ -235,6 +340,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'currency',
             ],
             [
                 'field' => 'quantity',
@@ -242,6 +348,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
             [
                 'field' => 'line_amount',
@@ -249,6 +356,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'currency',
             ],
             [
                 'field' => 'user_id',
@@ -256,6 +364,7 @@ class SalesLineController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'numeric',
             ],
         ];
     }

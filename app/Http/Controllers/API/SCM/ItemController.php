@@ -18,7 +18,7 @@ class ItemController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -48,7 +48,7 @@ class ItemController extends Controller
      * Display the specified resource.
      *
      * @param Item $item
-     * @return Response
+     * @return \App\Http\Resources\SCM\Item
      */
     public function show(Item $item)
     {
@@ -108,7 +108,7 @@ class ItemController extends Controller
         return trans_choice('scm.item', 2);
     }
 
-    static function getDashboardFields(): array
+    public static function getEditFields(): array
     {
         return [
             [
@@ -124,6 +124,33 @@ class ItemController extends Controller
                 'sortable' => true,
                 'filter' => true,
                 'editable' => true,
+            ],
+            [
+                'field' => 'storage_posting_method',
+                'headerName' => 'Lagerbuchungsmethode', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+            ],
+        ];
+    }
+
+    static function getDashboardFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'headerName' => 'Beschreibung', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
             ],
             [
                 'field' => 'storage_posting_method',

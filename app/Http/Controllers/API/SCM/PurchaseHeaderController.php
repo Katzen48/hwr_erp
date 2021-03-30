@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API\SCM;
 
 use App\Http\Controllers\Controller;
 use App\Models\SCM\PurchaseHeader;
+use App\Services\SCM\PurchasePost;
 use App\Traits\DashboardVisible;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Route;
 
 class PurchaseHeaderController extends Controller
 {
@@ -16,18 +18,18 @@ class PurchaseHeaderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
-        return \App\Http\Resources\SCM\PurchaseHeader::collection(PurchaseHeader::query()->simplePaginate(100));
+        return \App\Http\Resources\SCM\PurchaseHeader::collection(PurchaseHeader::query()->whereNull(['archived_at'])->simplePaginate(100));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \App\Http\Resources\SCM\PurchaseHeader
      */
     public function store(Request $request)
     {
@@ -41,8 +43,13 @@ class PurchaseHeaderController extends Controller
             'purchase_amount' => ['numeric']
         ]);
 
-        $purchaseHeader = new PurchaseHeader($validated);
-        $purchaseHeader->employee_id = auth()->user()->employee->id ?? null;
+        $purchaseHeader = new PurchaseHeader();
+        $purchaseHeader->forceFill($validated);
+
+        if(!$purchaseHeader->employee_id && auth()->check()) {
+            $purchaseHeader->employee_id = auth()->user()->employee->id ?? null;
+        }
+
         $this->onValidate($purchaseHeader);
 
         $purchaseHeader->save();
@@ -72,7 +79,7 @@ class PurchaseHeaderController extends Controller
      * Display the specified resource.
      *
      * @param \App\Models\SCM\PurchaseHeader $purchaseHeader
-     * @return PurchaseHeader
+     * @return \App\Http\Resources\SCM\PurchaseHeader
      */
     public function show(PurchaseHeader $purchaseHeader)
     {
@@ -101,7 +108,7 @@ class PurchaseHeaderController extends Controller
         $purchaseHeader->forceFill($validated);
         $this->onValidate($purchaseHeader);
         $purchaseHeader->save();
-        $purchaseHeader = $purchaseHeader->save();
+        $purchaseHeader = $purchaseHeader->refresh();
 
         return \App\Http\Resources\SCM\PurchaseHeader::make($purchaseHeader);
     }
@@ -122,6 +129,17 @@ class PurchaseHeaderController extends Controller
         return Response::noContent();
     }
 
+    /**
+     * @param PurchaseHeader $purchaseHeader
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
+    public function post(PurchaseHeader $purchaseHeader)
+    {
+        PurchasePost::post($purchaseHeader);
+
+        return \response('', 204);
+    }
+
     static function getDashboardId()
     {
         return 'purchase_header';
@@ -135,6 +153,73 @@ class PurchaseHeaderController extends Controller
     public static function isEditable(): bool
     {
         return true;
+    }
+
+    public static function getActions(): array
+    {
+        return [
+            'post' => [
+                'title' => __('scm.post'),
+                'url' => 'post',
+            ],
+        ];
+    }
+
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'vendor_id',
+                'headerName' => 'Lieferant', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'employee_id',
+                'headerName' => 'Einkäufer', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'outlet_id',
+                'headerName' => 'Verkaufsstelle', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'storage_id',
+                'headerName' => 'Lager', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'delivery_date',
+                'headerName' => 'Lieferdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'date',
+            ],
+            [
+                'field' => 'posting_date',
+                'headerName' => 'Buchungsdatum', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+                'type' => 'date',
+            ],
+        ];
     }
 
     static function getDashboardFields(): array
@@ -181,6 +266,7 @@ class PurchaseHeaderController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'date',
             ],
             [
                 'field' => 'posting_date',
@@ -188,6 +274,7 @@ class PurchaseHeaderController extends Controller
                 'sortable' => false,
                 'filter' => false,
                 'editable' => false,
+                'type' => 'date',
             ],
             [
                 'field' => 'purchase_amount',

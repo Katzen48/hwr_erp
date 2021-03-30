@@ -15,7 +15,7 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Pagination\Paginator
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
@@ -51,7 +51,7 @@ class EmployeeController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Administration\Employee  $employee
-     * @return Employee
+     * @return \App\Http\Resources\Administration\Employee
      */
     public function show(Employee $employee)
     {
@@ -107,6 +107,56 @@ class EmployeeController extends Controller
     public static function getDashboardTitle(): string
     {
         return trans_choice('scm.employee', 2);
+    }
+
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'first_name',
+                'headerName' => 'Vorname', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+            ],
+            [
+                'field' => 'last_name',
+                'headerName' => 'Last Name', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+            ],
+            [
+                'field' => 'position',
+                'headerName' => 'Position', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+            ],
+            [
+                'field' => 'purchaser',
+                'headerName' => 'Einkäufer', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+                'type' => 'boolean',
+            ],
+            [
+                'field' => 'salesperson',
+                'headerName' => 'Verkäufer', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+                'type' => 'boolean',
+            ],
+        ];
     }
 
     static function getDashboardFields()
