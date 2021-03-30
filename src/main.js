@@ -12,6 +12,8 @@ import 'vue-editable-grid/dist/VueEditableGrid.css'
 Vue.use(BootstrapVue)
 Vue.use(BootstrapVueIcons)
 Vue.component('vue-editable-grid', VueEditableGrid)
+Vue.component('list', (resolve) => require(['../src/components/Table'], resolve))
+Vue.component('card', (resolve) => require(['../src/components/Card'], resolve))
 
 Vue.config.productionTip = false
 

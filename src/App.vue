@@ -32,6 +32,8 @@ export default {
     else if(this.$route.path.toLowerCase() !== '/login') {
       await this.$router.push('signIn');
     }
+
+      document.addEventListener('contextmenu', (event) => event.preventDefault());
   },
   methods: {
 

@@ -1,68 +1,132 @@
 <template>
   <div>
+    <b-button-toolbar v-if="entity.edit">
+      <b-button-group class="mx-1">
+        <b-button @click="createItem" variant="primary">Neu</b-button>
+        <b-button @click="edit_mode = true" :disabled="!selectedItem" variant="secondary">Bearbeiten</b-button>
+        <b-button @click="deleteSelectedItems" :disabled="deleting" variant="danger">
+          {{ !deleting ? 'Löschen' : '' }}
+          <b-spinner small v-if="deleting"></b-spinner>
+          <span class="sr-only" v-if="deleting">Löschen...</span>
+        </b-button>
+      </b-button-group>
+
+      <b-button-group class="mx-1">
+        <b-button @click="openChildEntity(key)" :disabled="!selectedItem" v-for="(value, key) in childEntities" v-bind:key="key" variant="info">
+          {{ value.title }}
+        </b-button>
+      </b-button-group>
+
+      <b-button-group class="mx-1">
+        <b-button @click="executeAction(value.url, key)" :disabled="!selectedItem" v-for="(value, key) in actions" v-bind:key="key" variant="primary">
+          {{ value.title }}
+          <b-spinner small v-if="actionState[key]"></b-spinner>
+        </b-button>
+      </b-button-group>
+    </b-button-toolbar>
     <vue-editable-grid
       class="my-grid-class"
       ref="grid"
-      id="mygrid"
+      :id="gridId"
       :column-defs="fields"
       :row-data="items"
       row-data-key="entity.primary_key"
       @cell-updated="cellUpdated"
       @row-selected="rowSelected"
       @link-clicked="linkClicked"
+      @context-menu="contextMenu"
     >
       <template v-slot:header> </template>
     </vue-editable-grid>
+
+    <card v-if="edit_mode || create_mode" :entity="entity.edit" :selectedItem="selectedItem" :fields="entity.edit.fields" :base_url="base_url" :mode="edit_mode ? 'edit' : 'create'" @close="editModeClosed"></card>
+
+    <div v-if="shownChildEntity && selectedItem">
+      <b-modal size="xl" :id="shownChildEntityModalId" ref="childEntityModal" @hide="editModeClosed" :visible="true" :title="childEntities[shownChildEntity].title">
+        <list v-bind:key="'childEntities[shownChildEntity]' + '-' + randomId" :nestedEntity="childEntities[shownChildEntity]" :parentName="nestedEntityName || this.$route.name.toLowerCase()" :parentId="selectedItem[entity.primary_key]" :nestedEntityName="shownChildEntity"></list>
+      </b-modal>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-
     data() {
         return {
+            gridId: this.randomId(),
             fields: [],
             items: [],
             entity: {},
             base_url: 'https://erp.katzen48.de',
+            edit_mode: false,
+            selectedItem: null,
+            create_mode: false,
+            deleting: false,
+            childEntities: {},
+            actions: {},
+            actionState: {},
+            shownChildEntity: null,
+            shownChildEntityModalId: Math.random().toString(12).substring(3),
         }
+    },
+
+    props: {
+        nestedEntity: Object,
+        nestedEntityName: String,
+        parentName: String,
+        parentId: {
+          default: null,
+        },
     },
 
     mounted() {
+        this.entity = this.nestedEntity ? Object.assign({}, this.nestedEntity) : Object.assign({}, this.$store.state.application.menu[this.$route.name.toLowerCase()]);
 
-        this.entity = this.$store.state.application.menu[this.$route.name]
-        this.fields = this.entity.fields
-/*
-        this.fields.push({
-            editable: false,
-            field: 'Edit',
-            filter: false,
-            headerName: '',
-            sortable: false,
-        })
-*/
-        this.$axios.get(this.base_url + this.entity.api_url)
-            .then(res => {
-                this.items = res.data.data
-            })
-    },
-/*
-    updated() {
+        if(this.nestedEntity) {
+            this.entity.api_url = this.entity.api_url.replace(`{${this.parentName}}`, this.parentId);
 
-        let idx = this.fields.length - 1
-        let len = this.items.length
-
-        for (let i = 0; i < len; i++) {
-            let cell = document.getElementById('cell' + i + '-' + idx)
-            cell.innerHTML = "<b-icon-gear></b-icon-gear>"
-            cell.innerHTML = "<a onclick='console.log(window)'>&#9997;</a>"
+            if(this.entity.edit) {
+              this.entity.edit.api_url = this.entity.edit.api_url.replace(`{${this.parentName}}`, this.parentId);
+            }
         }
 
+        this.fields = this.entity.fields;
+        this.actions = this.entity.actions;
+
+        let primaryKey = this.fields.find(field => field.field == this.entity.primary_key);
+        if(primaryKey) {
+          primaryKey.type = 'link';
+        }
+
+        this.refresh().then(() => {
+
+                if(this.$refs.grid) {
+                  this.$refs.grid.$nextTick(() => {
+                    document.getElementById('cell0-0').click();
+                  });
+                }
+
+                document.addEventListener('keydown', this.onKeyDown);
+            });
+
+        Object.keys(this.$store.state.application.menu)
+            .filter(key => this.$store.state.application.menu[key].parent === (this.nestedEntityName || this.$route.name.toLowerCase()))
+            .forEach(key => this.childEntities[key] = this.$store.state.application.menu[key]);
+        //this.$set(this, 'shownChildEntity', this.childEntities[0]);
     },
-*/
+
+    computed: {
+        editableFields() {
+          return this.fields.filter(field => field.editable).map(field => field.field);
+        }
+    },
+
     methods: {
 
         cellUpdated(cell) {
+            if(!this.editableFields.includes(cell.column.field)) {
+                return;
+            }
 
             let url = this.base_url
                 + this.entity.api_url + '/'
@@ -103,14 +167,133 @@ export default {
 
         },
 
-        rowSelected() {
-
+        randomId() {
+          return Math.random().toString(12).substring(3);
         },
 
-        linkClicked() {
+        executeAction(actionUrl, key) {
+          if(!this.selectedItem) {
+              return;
+          }
 
+          this.$set(this.actionState, key, true);
+
+          let url = this.base_url
+              + this.entity.api_url + '/'
+              + this.selectedItem[this.entity.primary_key] + '/'
+              + actionUrl;
+
+          this.$axios.post(url, {}, {
+              'Accept': 'application/json'
+          }).then(res => {
+            if (res.data) {
+                alert(res.data);
+            }
+
+            this.refresh();
+          })
+          .catch(err => {
+            if(err.response.data.message) {
+                alert(err.response.data.message);
+            }
+
+            console.error(err);
+          }).finally(() => {
+            this.$set(this.actionState, key, false);
+          });
         },
+
+        contextMenu() {
+            //console.log('Context Menu opened');
+        },
+
+        rowSelected(event) {
+            this.$set(this, 'selectedItem', this.items[event.rowIndex]);
+        },
+
+        linkClicked(event) {
+            if(event.colData.field === this.entity.primary_key) {
+              this.selectedItem = event.rowData;
+              this.edit_mode = true;
+            }
+        },
+
+        openChildEntity(childEntity) {
+            this.$set(this, 'shownChildEntity', childEntity);
+        },
+
+        createItem() {
+            this.selectedItem = {};
+            this.create_mode = true;
+        },
+
+        editModeClosed() {
+            this.edit_mode = false;
+            this.create_mode = false;
+            this.shownChildEntity = null;
+            this.refresh();
+            document.getElementById('cell0-0').click();
+        },
+
+        /**
+         *
+         * @param event KeyboardEvent
+         */
+        onKeyDown(event) {
+          if(event.ctrlKey) {
+            if(event.key === 'e') {
+              if (this.selectedItem) {
+                this.edit_mode = true;
+              }
+              event.preventDefault();
+            }
+
+            if(event.key === 'Delete') {
+              this.deleteSelectedItems();
+              event.preventDefault();
+              event.stopPropagation();
+            }
+          }
+        },
+
+      deleteSelectedItems() {
+          if(!this.$refs.grid.selStart || !this.$refs.grid.selEnd || (this.$refs.grid.selStart.length < 1) || (this.$refs.grid.selEnd.length < 0)) {
+            return;
+          }
+
+          let min = Math.min(this.$refs.grid.selStart[0], this.$refs.grid.selEnd[0]);
+          let max = Math.max(this.$refs.grid.selStart[0], this.$refs.grid.selEnd[0]);
+
+          this.deleting = true;
+          let deletePromises = [];
+          for(let i = min ; i <= max ; i++) {
+              let item = this.items[i];
+
+              deletePromises.push(this.$axios.delete(this.base_url + this.entity.api_url + '/' + item[this.entity.primary_key]));
+          }
+
+          Promise.all(deletePromises).then(() => {
+            this.deleting = false;
+          }).catch((err) => {
+            this.deleting = false;
+
+            if(err.response.data && err.response.data.message) {
+                alert(err.response.data.message)
+            }
+          }).finally(() => this.refresh());
+      },
+
+        refresh() {
+          return this.$axios.get(this.base_url + this.entity.api_url)
+              .then(res => {
+                  this.$set(this, 'items', res.data.data);
+              })
+        }
     },
+
+    destroyed() {
+        document.removeEventListener('keydown', this.onKeyDown);
+    }
 }
 </script>
 
