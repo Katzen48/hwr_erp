@@ -124,21 +124,21 @@ class EmployeeController extends Controller
                 'headerName' => 'Vorname', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
-                'editable' => false,
+                'editable' => true,
             ],
             [
                 'field' => 'last_name',
                 'headerName' => 'Last Name', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
-                'editable' => false,
+                'editable' => true,
             ],
             [
                 'field' => 'position',
                 'headerName' => 'Position', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
-                'editable' => false,
+                'editable' => true,
             ],
             [
                 'field' => 'purchaser',

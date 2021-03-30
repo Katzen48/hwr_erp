@@ -33,6 +33,7 @@ class StructureController extends Controller
                 'title' => $controller::getDashboardTitle(),
                 'parent' => $parent,
                 'type' => 'List',
+                'actions' => $controller::getActions(),
                 'fields' => $controller::getDashboardFields(),
             ];
 

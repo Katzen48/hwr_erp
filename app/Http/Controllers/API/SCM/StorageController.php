@@ -109,6 +109,54 @@ class StorageController extends Controller
         return true;
     }
 
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'headerName' => 'Beschreibung', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'address',
+                'headerName' => 'Adresse.', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'postcode',
+                'headerName' => 'PLZ', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'state',
+                'headerName' => 'Bundesland', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'country',
+                'headerName' => 'Land', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+        ];
+    }
+
     static function getDashboardFields(): array
     {
         return [

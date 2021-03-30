@@ -27,7 +27,6 @@ class DatabaseSeeder extends Seeder
 
         Storage::factory(2)->create();
         Outlet::factory(2)->create();
-        Employee::factory(5)->create();
 
         Vendor::factory(5)->create();
 

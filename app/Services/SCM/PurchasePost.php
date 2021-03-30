@@ -7,8 +7,7 @@ use App\Models\GL\StorageEntry;
 use App\Models\GL\ValueEntry;
 use App\Models\SCM\PurchaseHeader;
 use App\Models\SCM\PurchaseLine;
-use App\Models\SCM\Storage;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -21,17 +20,20 @@ class PurchasePost
     public static function post($purchaseHeaders)
     {
         /**
-         * @var Collection|PurchaseHeader $purchaseHeaders
+         * @var Collection|PurchaseHeader $collection
          */
+        $collection = collect();
         if(!$purchaseHeaders instanceof Collection){
-            $purchaseHeaders = collect($purchaseHeaders);
+            $collection->push($purchaseHeaders);
+        } else {
+            $collection = $purchaseHeaders;
         }
 
-        DB::transaction(function() use ($purchaseHeaders) {
+        DB::transaction(function() use ($collection) {
             $carbon = Carbon::now();
 
-            $purchaseHeaders->each(function(PurchaseHeader $purchaseHeader) use ($carbon) {
-                $purchaseHeader->open_purchase_lines()->each(function(PurchaseLine $purchaseLine) use ($purchaseHeader, $carbon){
+            $collection->each(function(PurchaseHeader $purchaseHeader) use ($carbon) {
+                $purchaseHeader->open_purchase_lines()->each(function(PurchaseLine $purchaseLine) use ($purchaseHeader, $carbon) {
                     //1. Lagerposten erstellen
                     $storageEntry = new StorageEntry();
                     $storageEntry->storage_id = $purchaseHeader->storage_id;

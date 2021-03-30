@@ -20,7 +20,7 @@ class PurchaseLineController extends Controller
      */
     public function index(PurchaseHeader $purchaseHeader)
     {
-        return \App\Http\Resources\SCM\PurchaseLine::collection($purchaseHeader->purchase_lines()->simplePaginate(100));
+        return \App\Http\Resources\SCM\PurchaseLine::collection($purchaseHeader->purchase_lines()->whereNull(['archived_at'])->simplePaginate(100));
     }
 
     /**
@@ -51,8 +51,7 @@ class PurchaseLineController extends Controller
         $this->onValidate($purchaseLine);
 
         $purchaseLine->save();
-        //$purchaseLine = $purchaseLine->refresh();
-        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine);
+        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine->refresh());
     }
 
     public function onValidate(PurchaseLine $purchaseLine)
@@ -104,6 +103,13 @@ class PurchaseLineController extends Controller
         {
             $this->calcAmounts($purchaseLine);
         }
+
+        $purchaseHeader = $purchaseLine->purchaseHeader;
+
+        if($purchaseHeader) {
+            $purchaseHeader->recalculatePurchaseAmount();
+            $purchaseHeader->save();
+        }
     }
 
     public function calcAmounts(PurchaseLine $purchaseLine)
@@ -115,12 +121,12 @@ class PurchaseLineController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
+     * @param  int  $purchaseLine
      * @return \App\Http\Resources\SCM\PurchaseLine
      */
-    public function show(PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
+    public function show(PurchaseHeader $purchaseHeader, int $purchaseLine)
     {
-        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine);
+        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseHeader->purchase_lines()->findOrFail($purchaseLine));
     }
 
     /**
@@ -130,7 +136,7 @@ class PurchaseLineController extends Controller
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
      * @return \App\Http\Resources\SCM\PurchaseLine
      */
-    public function update(Request $request, PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
+    public function update(Request $request, PurchaseHeader $purchaseHeader, int $purchaseLine)
     {
         $validated = $this->validate($request, [
             'item_id' => ['nullable', 'exists:items,id'],
@@ -143,11 +149,13 @@ class PurchaseLineController extends Controller
             'line_amount' =>['numeric']
         ]);
 
-        $purchaseLine->forceFill($validated);
-        $this->onValidate($purchaseLine);
-        $purchaseLine->save();
+        $line = $purchaseHeader->purchase_lines()->findOrFail($purchaseLine);
 
-        return \App\Http\Resources\SCM\PurchaseLine::make($purchaseLine->refresh());
+        $line->forceFill($validated);
+        $this->onValidate($line);
+        $line->save();
+
+        return \App\Http\Resources\SCM\PurchaseLine::make($line->refresh());
     }
 
     /**
@@ -156,9 +164,11 @@ class PurchaseLineController extends Controller
      * @param  \App\Models\SCM\PurchaseLine  $purchaseLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PurchaseHeader $purchaseHeader, PurchaseLine $purchaseLine)
+    public function destroy(PurchaseHeader $purchaseHeader, int $purchaseLine)
     {
-        if(!$purchaseLine->delete())
+        $line = $purchaseHeader->purchase_lines()->findOrFail($purchaseLine);
+
+        if(!$line->delete())
         {
             abort(500);
         }

@@ -117,6 +117,40 @@ class ItemVariantController extends Controller
         return true;
     }
 
+    public static function getEditFields(): array
+    {
+        return [
+            [
+                'field' => 'id',
+                'headerName' => 'ID', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => false,
+            ],
+            [
+                'field' => 'description',
+                'headerName' => 'Beschreibung', // TODO i18n
+                'sortable' => true,
+                'filter' => true,
+                'editable' => true,
+            ],
+            [
+                'field' => 'unit_price',
+                'headerName' => 'Preis', // TODO i18n
+                'sortable' => true,
+                'filter' => false,
+                'editable' => true,
+            ],
+            [
+                'field' => 'vat_percent',
+                'headerName' => 'MwSt. %', // TODO i18n
+                'sortable' => false,
+                'filter' => false,
+                'editable' => true,
+            ],
+        ];
+    }
+
     static function getDashboardFields(): array
     {
         return [

@@ -22,16 +22,19 @@ class SalesPost
     public static function post($salesHeaders)
     {
         /**
-         * @var Collection|SalesHeader $salesHeaders
+         * @var Collection|SalesHeader $collection
          */
+        $collection = collect();
         if(!$salesHeaders instanceof Collection){
-            $salesHeaders = collect($salesHeaders);
+            $collection->push($salesHeaders);
+        } else {
+            $collection = $salesHeaders;
         }
 
-        DB::transaction(function() use ($salesHeaders){
+        DB::transaction(function() use ($collection){
             $carbon = Carbon::now();
 
-            $salesHeaders->each(function(SalesHeader $salesHeader) use ($carbon) {
+            $collection->each(function(SalesHeader $salesHeader) use ($carbon) {
                 $salesHeader->open_sales_lines()->each(function(Salesline $salesLine) use ($salesHeader, $carbon){
                     //1. Lagermenge prüfen
                     $applyableEntries = $salesLine->item_variant->open_storage_entries()->where([

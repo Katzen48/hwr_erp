@@ -150,7 +150,7 @@ class ItemController extends Controller
                 'headerName' => 'Beschreibung', // TODO i18n
                 'sortable' => true,
                 'filter' => true,
-                'editable' => true,
+                'editable' => false,
             ],
             [
                 'field' => 'storage_posting_method',

@@ -20,7 +20,7 @@ class SalesLineController extends Controller
      */
     public function index(SalesHeader $salesHeader)
     {
-        return \App\Http\Resources\SCM\SalesLine::collection($salesHeader->sales_lines()->simplePaginate(100));
+        return \App\Http\Resources\SCM\SalesLine::collection($salesHeader->sales_lines()->whereNull(['archived_at'])->simplePaginate(100));
     }
 
     /**
@@ -51,7 +51,7 @@ class SalesLineController extends Controller
         $this->onValidate($salesLine);
 
         $salesLine->save();
-        return \App\Http\Resources\SCM\SalesLine::make($salesLine);
+        return \App\Http\Resources\SCM\SalesLine::make($salesLine->refresh());
     }
 
     public function onValidate(SalesLine $salesLine)
@@ -103,6 +103,13 @@ class SalesLineController extends Controller
         {
             $this->calcAmounts($salesLine);
         }
+
+        $salesHeader = $salesLine->sales_header;
+
+        if($salesHeader) {
+            $salesHeader->recalculateOrderAmount();
+            $salesHeader->save();
+        }
     }
 
     public function calcAmounts(SalesLine $salesLine)
@@ -114,12 +121,12 @@ class SalesLineController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\SCM\SalesLine $salesLine
+     * @param int $salesLine
      * @return \App\Http\Resources\SCM\SalesHeader
      */
-    public function show(SalesHeader $salesHeader, SalesLine $salesLine)
+    public function show(SalesHeader $salesHeader, int $salesLine)
     {
-        return \App\Http\Resources\SCM\SalesLine::make($salesLine);
+        return \App\Http\Resources\SCM\SalesLine::make($salesHeader->sales_lines()->findOrFail($salesLine));
     }
 
     /**
@@ -129,7 +136,7 @@ class SalesLineController extends Controller
      * @param \App\Models\SCM\SalesLine $salesLine
      * @return \App\Http\Resources\SCM\SalesHeader
      */
-    public function update(Request $request, SalesHeader $salesHeader, SalesLine $salesLine)
+    public function update(Request $request, SalesHeader $salesHeader, int $salesLine)
     {
         $validated = $this->validate($request, [
             'item_id' => ['nullable', 'exists:items,id'],
@@ -142,11 +149,13 @@ class SalesLineController extends Controller
             'line_amount' =>['numeric']
         ]);
 
-        $salesLine->forceFill($validated);
-        $this->onValidate($salesLine);
-        $salesLine->save();
+        $line = $salesHeader->sales_lines()->findOrFail($salesLine);
 
-        return \App\Http\Resources\SCM\SalesLine::make($salesLine->refresh());
+        $line->forceFill($validated);
+        $this->onValidate($line);
+        $line->save();
+
+        return \App\Http\Resources\SCM\SalesLine::make($line->refresh());
     }
 
     /**
@@ -155,9 +164,11 @@ class SalesLineController extends Controller
      * @param \App\Models\SCM\SalesLine $salesLine
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SalesHeader $salesHeader, SalesLine $salesLine)
+    public function destroy(SalesHeader $salesHeader, int $salesLine)
     {
-        if(!$salesLine->delete())
+        $line = $salesHeader->sales_lines()->findOrFail($salesLine);
+
+        if(!$line->delete())
         {
             abort(500);
         }

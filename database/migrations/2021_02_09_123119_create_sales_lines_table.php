@@ -30,7 +30,7 @@ class CreateSalesLinesTable extends Migration
 
             $table->primary(['sales_header_id', 'line_no']);
 
-            $table->foreign('sales_header_id')->references('id')->on('sales_headers')->onDelete('RESTRICT')->onUpdate('RESTRICT');
+            $table->foreign('sales_header_id')->references('id')->on('sales_headers')->onDelete('CASCADE')->onUpdate('RESTRICT');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('item_variant_id')->references('id')->on('item_variants')->onDelete('RESTRICT')->onUpdate('RESTRICT');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('RESTRICT')->onUpdate('RESTRICT');
